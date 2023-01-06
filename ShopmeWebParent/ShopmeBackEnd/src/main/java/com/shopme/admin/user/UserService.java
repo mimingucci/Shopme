@@ -35,6 +35,10 @@ public class UserService {
 //	public void listByPage(int pageNum, PagingAndSortingHelper helper) {
 //		helper.listEntities(pageNum, USERS_PER_PAGE, userRepo);
 //	}
+	public User getByEmail(String email) {
+		User user=userRepo.getUserByEmail(email);
+		return user;
+	}
 	
 	public Page<User> listByPage(int pageNum){
 		int pageSize=5;
@@ -113,5 +117,23 @@ public class UserService {
 	
 	public void updateUserEnabledStatus(Integer id, boolean enabled) {
 		userRepo.updateEnabledStatus(id, enabled);
+	}
+
+	public User updateAccount(User user) {
+        User userInDB = userRepo.findById(user.getId()).get();
+		
+		if (!user.getPassword().isEmpty()) {
+			userInDB.setPassword(user.getPassword());
+			encodePassword(userInDB);
+		}
+		
+		if (user.getPhotos() != null) {
+			userInDB.setPhotos(user.getPhotos());
+		}
+		
+		userInDB.setFirstName(user.getFirstName());
+		userInDB.setLastName(user.getLastName());
+		
+		return userRepo.save(userInDB);
 	}
 }

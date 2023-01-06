@@ -3,14 +3,20 @@ package com.shopme.admin.brand;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.shopme.common.entity.Brand;
 
 @Service
+@Transactional
 public class BrandService {
-public static final int BRANDS_PER_PAGE = 10;
+    public static final int BRANDS_PER_PAGE = 10;
 	
 	@Autowired
 	private BrandRepository repo;
@@ -19,9 +25,24 @@ public static final int BRANDS_PER_PAGE = 10;
 		return (List<Brand>) repo.findAll();
 	}
 	
+	
+//	public List<Brand> listAll(Pageable pageable) {
+//		return (List<Brand>) repo.findAll(pageable);
+//	}
+	
 //	public void listByPage(int pageNum, PagingAndSortingHelper helper) {
 //		helper.listEntities(pageNum, BRANDS_PER_PAGE, repo);
 //	}
+	
+	public List<Brand> allBrands(Pageable pageable){
+		Page<Brand> pageBrand=repo.findAll(pageable);
+		return pageBrand.getContent();
+	}
+	
+	public List<Brand> allSearchBrands(String keyword, Pageable pageable){
+		Page<Brand> pageBrand=repo.findAll(keyword, pageable);
+		return pageBrand.getContent();
+	}
 	
 	public Brand save(Brand brand) {
 		return repo.save(brand);
@@ -59,4 +80,6 @@ public static final int BRANDS_PER_PAGE = 10;
 		
 		return "OK";
 	}
+	
+	
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -19,5 +20,6 @@ public interface BrandRepository extends JpaRepository<Brand, Integer>{
 	@Query("SELECT NEW Brand(b.id, b.name) FROM Brand b ORDER BY b.name ASC")
 	public List<Brand> findAll();
 	
-	 
+	@Query("SELECT b FROM Brand b")
+	public Page<Brand> findAll(Pageable pageable);
 }

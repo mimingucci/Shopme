@@ -10,7 +10,7 @@
 		<a th:href="@{/brands/new}" class="fas fa-folder-plus fa-2x icon-dark mr-2"></a>
 	</div>
 		
-	<div th:replace="fragments :: search_form_and_message" />
+	<div th:replace="fragments :: search_form_and_message('/brands')" />
 	
 	<div class="full-details">
 		<table class="table table-bordered table-striped table-hover table-responsive-xl">
@@ -18,7 +18,7 @@
 				<tr>
 					<th class="hideable-column">Brand ID</th>
 					<th>Logo</th>
-					<th th:replace="fragments :: column_link('name', 'Brand Name', 'none')" />
+					<th/>
 					<th>Categories</th>
 					<th></th>
 				</tr>								
@@ -70,10 +70,8 @@
 	<div th:replace="fragments :: footer"></div>
 	
 </div>
-<script th:src="@{/js/common_list.js}"></script>
 <script type="text/javascript">
-	var moduleURL = "[[@{/brands}]]";
-    alert(moduleURL);
+	moduleURL = "/ShopmeAdmin/brands";
 	$(document).ready(function() {
 		$(".link-delete").on("click", function(e) {
 			e.preventDefault();
@@ -81,5 +79,6 @@
 		});
 	});
 </script>
+<script th:src="@{/js/common_list.js}"></script>
 </body>
 </html>

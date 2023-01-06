@@ -19,7 +19,7 @@
 		<p>Shopme Control Panel - Copyright &copy; Shopme</p>
 	</div>
 	
-	<div th:fragment="search_form_and_message()">
+	<div th:fragment="search_form_and_message(moduleURL)">
 		<form th:action="@{${moduleURL} + '/page/1'}" class="form-inline m-3">
 			<input type="hidden" name="sortField" th:value="${sortField}" />
 			<input type="hidden" name="sortDir" th:value="${sortDir}" />
@@ -54,7 +54,7 @@
 	</th>
 	<a th:fragment="page_link(pageNum, label)"
 		class="page-link" 
-		th:href="@{'/categories' + '/page/' + ${pageNum} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + ${keyword != null ? '&keyword=' + keyword : ''} + ${categoryId != null ? '&categoryId=' + categoryId : ''}}">[[${label}]]</a>
+		th:href="@{'/'+${listName} + '/page/' + ${pageNum} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + ${keyword != null ? '&keyword=' + keyword : ''} + ${categoryId != null ? '&categoryId=' + categoryId : ''}}">[[${label}]]</a>
 	
 	<div th:fragment="user_photos" th:remove="tag">
 		<span th:if="${user.photos == null}" class="fas fa-portrait fa-3x icon-silver"></span>
@@ -120,6 +120,9 @@
 		    </li>		    
 		  </ul>
 		</nav>	
+	</div>
+	<div th:if="${currentPage>0}">
+	   <input type="hidden" name="previousPage" th:value="${currentPage}"/>
 	</div>		
 	</div>
 	
