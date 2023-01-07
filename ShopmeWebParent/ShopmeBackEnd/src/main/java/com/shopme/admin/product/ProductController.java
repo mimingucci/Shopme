@@ -1,6 +1,10 @@
 package com.shopme.admin.product;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -49,9 +53,9 @@ public class ProductController {
 			@RequestParam(name = "sortDir", defaultValue = "asc") String sortDir,
 			@RequestParam(name = "categoryId", defaultValue = "0") String categoryId,
 			@RequestParam(name = "keyword", defaultValue = "") String keyword,
-			@PathVariable(name = "pageNum") int pageNum, Model model) {
-
-		productService.listByPage(pageNum, sortField, sortDir, keyword, Integer.valueOf(categoryId), model);
+			@PathVariable(name = "pageNum") Integer pageNum, Model model) {
+        
+		productService.listByPage( sortField, sortDir, keyword, pageNum ,Integer.valueOf(categoryId), model);
 
 		List<Category> listCategories = categoryService.listCategories();
 
@@ -69,7 +73,7 @@ public class ProductController {
 	@GetMapping("/products/new")
 	public String createProduct(Model model) {
 		List<Brand> listBrands = brandService.listAll();
-
+        
 		Product product = new Product();
 		product.setEnabled(true);
 		product.setInStock(true);
@@ -100,76 +104,25 @@ public class ProductController {
 				return defaultRedirectURL;
 			}
 		}
+		
+		setMainImage(mainImageMultipart, product);
+		setExistingExtraImageNames(imageIDs, imageNames, product);
+		setNewExtraImageNames(extraImageMultiparts, product);
+		setProductDetails(detailIDs, detailNames, detailValues, product);
 
-		// ProductSaveHelper.setMainImageName(mainImageMultipart, product);
-		if (!mainImageMultipart.isEmpty()) {
-			String fileName = StringUtils.cleanPath(mainImageMultipart.getOriginalFilename());
-			product.setMainImage(fileName);
-		}
-		// ProductSaveHelper.setExistingExtraImageNames(imageIDs, imageNames, product);
-		if (imageIDs != null && imageIDs.length > 0) {
-
-			Set<ProductImage> images = new HashSet<>();
-
-			for (int count = 0; count < imageIDs.length; count++) {
-				Integer id = Integer.parseInt(imageIDs[count]);
-				String name = imageNames[count];
-
-				images.add(new ProductImage(id, name, product));
-			}
-
-			product.setImages(images);
-		}
-
-		// ProductSaveHelper.setNewExtraImageNames(extraImageMultiparts, product);
-		if (extraImageMultiparts.length > 0) {
-			for (MultipartFile multipartFile : extraImageMultiparts) {
-				if (!multipartFile.isEmpty()) {
-					String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
-
-					if (!product.containsImageName(fileName)) {
-						product.addExtraImage(fileName);
-					}
-				}
-			}
-		}
-		// ProductSaveHelper.setProductDetails(detailIDs, detailNames, detailValues,
-		// product);
-
-		if (detailNames != null && detailNames.length > 0) {
-
-			for (int count = 0; count < detailNames.length; count++) {
-				String name = detailNames[count];
-				String value = detailValues[count];
-				Integer id = Integer.parseInt(detailIDs[count]);
-
-				if (id != 0) {
-					product.addDetail(id, name, value);
-				} else if (!name.isEmpty() && !value.isEmpty()) {
-					product.addDetail(name, value);
-				}
-			}
-		}
+		
 
 		Product savedProduct = productService.save(product);
-
+        deleteMainImageIfMainImageWereUploaded(savedProduct);
 		//ProductSaveHelper.saveUploadedImages(mainImageMultipart, extraImageMultiparts, savedProduct);
 		if (!mainImageMultipart.isEmpty()) {
 			String fileName = StringUtils.cleanPath(mainImageMultipart.getOriginalFilename());
-			String uploadDir = "product-images/" + savedProduct.getId();
-			
-			//List<String> listObjectKeys = .listFolder(uploadDir + "/");
-//			for (String objectKey : listObjectKeys) {
-//				if (!objectKey.contains("/extras/")) {
-//					FileUploadUtil.removeDir(objectKey);
-//				}
-//			}
-			
+			String uploadDir = "../product-images/" + savedProduct.getId();			
 			FileUploadUtil.saveFile(uploadDir, fileName, mainImageMultipart);					
 		}
 		
 		if (extraImageMultiparts.length > 0) {
-			String uploadDir = "product-images/" + savedProduct.getId() + "/extras";
+			String uploadDir = "../product-images/" + savedProduct.getId() + "/extras";
 			
 			for (MultipartFile multipartFile : extraImageMultiparts) {
 				if (multipartFile.isEmpty()) continue;
@@ -178,11 +131,185 @@ public class ProductController {
 				FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);	
 			}
 		}
-		//ProductSaveHelper.deleteExtraImagesWeredRemovedOnForm(product);
+		deleteExtrasImagesWereDeletedInForm(product);
 		
 
 		ra.addFlashAttribute("message", "The product has been saved successfully.");
 
+		return defaultRedirectURL;
+	}
+	
+	public void setMainImage(MultipartFile multipartFile, Product product) {
+		if(!multipartFile.isEmpty()) {
+			String fileName=StringUtils.cleanPath(multipartFile.getOriginalFilename());
+			product.setMainImage(fileName);
+		}
+	}
+	
+	static void deleteMainImageIfMainImageWereUploaded(Product product) throws IOException {
+		 String dir="../product-images/"+product.getId();
+		 String newMainImageName=product.getMainImagePath();
+		   List<String> listFolder=new ArrayList<>();
+		   Files.list(Paths.get(dir)).forEach(file->{
+			   String fileName=file.toFile().getName();
+			   if(newMainImageName.equals(fileName)) {
+				  try {
+					Files.delete(file);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			   }
+		   });
+	}
+	
+	
+	
+	public void deleteExtrasImagesWereDeletedInForm(Product product) {
+		 String extrasFileDir="../product-images/"+product.getId()+"/extras";
+		 Path dirPath= Paths.get(extrasFileDir);
+		 try {
+			Files.list(dirPath).forEach(file ->{
+				String fileName=file.toFile().getName();
+				if(!product.containsImageName(fileName)) {
+					try {
+						Files.delete(file);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			});
+			
+			
+		} catch (Exception ex) {
+			// TODO: handle exception
+		}
+	}
+	
+	static void setProductDetails(String[] detailIDs, String[] detailNames, 
+			String[] detailValues, Product product) {
+		if (detailNames == null || detailNames.length == 0) return;
+		
+		for (int count = 0; count < detailNames.length; count++) {
+			String name = detailNames[count];
+			String value = detailValues[count];
+			Integer id = Integer.parseInt(detailIDs[count]);
+			
+			if (id != 0) {
+				product.addDetail(id, name, value);
+			} else if (!name.isEmpty() && !value.isEmpty()) {
+				product.addDetail(name, value);
+			}
+		}
+	}
+
+	
+	static void setExistingExtraImageNames(String[] imageIDs, String[] imageNames, 
+			Product product) {
+		if (imageIDs == null || imageIDs.length == 0) return;
+		
+		Set<ProductImage> images = new HashSet<>();
+		
+		for (int count = 0; count < imageIDs.length; count++) {
+			Integer id = Integer.parseInt(imageIDs[count]);
+			String name = imageNames[count];
+			
+			images.add(new ProductImage(id, name, product));
+		}
+		
+		product.setImages(images);
+		
+	}
+	
+	static void setNewExtraImageNames(MultipartFile[] extraImageMultiparts, Product product) {
+		if (extraImageMultiparts.length > 0) {
+			for (MultipartFile multipartFile : extraImageMultiparts) {
+				if (!multipartFile.isEmpty()) {
+					String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
+					
+					if (!product.containsImageName(fileName)) {
+						product.addExtraImage(fileName);
+					}
+				}
+			}
+		}
+	}
+	
+	@GetMapping("/products/detail/{id}")
+	public String viewProductDetails(@PathVariable("id") Integer id, Model model,
+			RedirectAttributes ra) {
+		try {
+			Product product = productService.get(id);			
+			model.addAttribute("product", product);		
+			
+			return "products/product_detail_modal";
+			
+		} catch (Exception e) {
+			ra.addFlashAttribute("message", e.getMessage());
+			
+			return defaultRedirectURL;
+		}
+	}
+	
+	@GetMapping("/products/{id}/enabled/{status}")
+	public String updateProductEnabledStatus(@PathVariable("id") Integer id,
+			@PathVariable("status") boolean enabled, RedirectAttributes redirectAttributes) {
+		productService.updateProductEnabledStatus(id, enabled);
+		String status = enabled ? "enabled" : "disabled";
+		String message = "The Product ID " + id + " has been " + status;
+		redirectAttributes.addFlashAttribute("message", message);
+		
+		return defaultRedirectURL;
+	}
+	
+	@GetMapping("/products/edit/{id}")
+	public String editProduct(@PathVariable("id") Integer id, Model model,
+			RedirectAttributes ra, @AuthenticationPrincipal ShopmeUserDetails loggedUser) {
+		try {
+			Product product = productService.get(id);
+			List<Brand> listBrands = brandService.listAll();
+			Integer numberOfExistingExtraImages = product.getImages().size();
+			
+			boolean isReadOnlyForSalesperson = false;
+			
+			if (!loggedUser.hasRole("Admin") && !loggedUser.hasRole("Editor")) {
+				if (loggedUser.hasRole("Salesperson")) {
+					isReadOnlyForSalesperson = true;
+				}
+			}
+			
+			model.addAttribute("isReadOnlyForSalesperson", isReadOnlyForSalesperson);
+			model.addAttribute("product", product);
+			model.addAttribute("listBrands", listBrands);
+			model.addAttribute("pageTitle", "Edit Product (ID: " + id + ")");
+			model.addAttribute("numberOfExistingExtraImages", numberOfExistingExtraImages);
+			
+			return "products/product_form";
+			
+		} catch (Exception e) {
+			ra.addFlashAttribute("message", e.getMessage());
+			
+			return defaultRedirectURL;
+		}
+	}
+	
+	@GetMapping("/products/delete/{id}")
+	public String deleteProduct(@PathVariable(name = "id") Integer id, 
+			Model model, RedirectAttributes redirectAttributes) {
+		try {
+			productService.delete(id);
+			String productExtraImagesDir = "../product-images/" + id + "/extras";
+			String productImagesDir = "../product-images/" + id;
+			
+			FileUploadUtil.removeDir(productExtraImagesDir);
+			FileUploadUtil.removeDir(productImagesDir);
+			
+			redirectAttributes.addFlashAttribute("message", 
+					"The product ID " + id + " has been deleted successfully");
+		} catch (Exception ex) {
+			redirectAttributes.addFlashAttribute("message", ex.getMessage());
+		}
+		
 		return defaultRedirectURL;
 	}
 }

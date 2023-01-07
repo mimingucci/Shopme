@@ -1,6 +1,6 @@
-dropdownBrands = $("#brand");
-dropdownCategories = $("#category");
-
+var dropdownBrands = $("#brand");
+var dropdownCategories = $("#category");
+var matches = dropdownBrands.val().match(/(\d+)/);
 $(document).ready(function() {
 	
 	$("#shortDescription").richText();
@@ -27,8 +27,8 @@ function getCategoriesForNewForm() {
 }
 
 function getCategories() {
-	brandId = dropdownBrands.val(); 
-	url = brandModuleURL + "/" + brandId + "/categories";
+	var brandId = matches[0]; 
+	var url =  + "/brands/" + brandId + "/categories";
 	
 	$.get(url, function(responseJson) {
 		$.each(responseJson, function(index, category) {
