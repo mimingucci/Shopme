@@ -69,5 +69,22 @@ public class Country {
 	public String toString() {
 		return "Country [id=" + id + ", name=" + name + ", code=" + code + "]";
 	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public Set<State> getStates() {
+		return states;
+	}
+
+	public void setStates(Set<State> states) {
+		this.states = states;
+	}
+
 	
 }

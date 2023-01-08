@@ -1,5 +1,6 @@
 package com.shopme.admin.setting;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,5 +48,17 @@ public class SettingService {
 	
 	public List<Setting> getPaymentSettings() {
 		return repo.findByCategory(SettingCategory.PAYMENT);
-	}	
+	}
+
+	public GeneralSettingBag getGeneralSettings() {
+		List<Setting> settings = new ArrayList<>();
+		
+		List<Setting> generalSettings = repo.findByCategory(SettingCategory.GENERAL);
+		List<Setting> currencySettings = repo.findByCategory(SettingCategory.CURRENCY);
+		
+		settings.addAll(generalSettings);
+		settings.addAll(currencySettings);
+		
+		return new GeneralSettingBag(settings);
+	}
 }
