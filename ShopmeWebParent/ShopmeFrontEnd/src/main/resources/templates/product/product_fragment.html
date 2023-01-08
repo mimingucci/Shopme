@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="content" class="col-sm-2">
+	<div>
+		<a th:href="@{${product.URI}}">
+			<img th:src="@{${'/Shopme/'+product.mainImagePath}}" width="150" />
+			<br/>
+			<b>[[${product.shortName}]]</b>
+		</a>
+	</div>
+	<div>
+		<table>
+			<tr>
+				
+				<td><small>[[${product.reviewCount}]]</small></td>
+			</tr>
+		</table>
+	</div>
+	<div th:replace="product/product_fragment :: product_price"></div>
+</div>
+
+<div th:fragment="product_price" th:remove="tag">
+	<th:block th:if="${product.discountPercent &lt;= 0}">
+		<span>[[${product.price}]]</span>
+	</th:block>
+	<th:block th:if="${product.discountPercent > 0}">
+		<span style="font-size: larger; color: darkred"><div th:text="${product.discountPrice}"></div></span>
+		<del><span>[[${product.price}]]</span></del>
+	</th:block>
+</div>
+
+
+
+</body>
+</html>
