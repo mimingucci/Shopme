@@ -1,15 +1,16 @@
 package com.shopme.admin.customer;
 
-import java.awt.print.Pageable;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.stereotype.Repository;
 
 import com.shopme.common.entity.Customer;
-
+@Repository
 public interface CustomerRepository extends PagingAndSortingRepository<Customer, Integer>{
 
 	@Query("SELECT c FROM Customer c WHERE CONCAT(c.email, ' ', c.firstName, ' ', c.lastName, ' ', "

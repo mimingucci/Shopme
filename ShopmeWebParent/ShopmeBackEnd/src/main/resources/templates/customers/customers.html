@@ -9,30 +9,30 @@
 		
 	</div>
 		
-	<div th:replace="fragments :: search_form_and_message" />
+	<div th:replace="fragments :: search_form_and_message(${moduleURL})" />
 	
 	<div class="full-details">
 		<table class="table table-bordered table-striped table-hover table-responsive-xl">
 			<thead class="thead-dark">
 				<tr>
-					<th th:replace="fragments :: column_link('id', 'ID', 'none')" />
-					<th th:replace="fragments :: column_link('firstName', 'First Name', 'none')" />
-					<th th:replace="fragments :: column_link('lastName', 'Last Name', 'none')" />
+					<th th:replace="fragments :: column_link('id', 'ID', 'none', ${currentPage}, ${reverseDir}, ${moduleURL} )" />
+					<th th:replace="fragments :: column_link('firstName', 'First Name', 'none', ${currentPage}, ${reverseDir}, ${moduleURL})" />
+					<th th:replace="fragments :: column_link('lastName', 'Last Name', 'none', ${currentPage}, ${reverseDir}, ${moduleURL})" />
 					
 					<th class="hideable-column">
-					<th th:replace="fragments :: column_link('email', 'E-mail', 'tag')" />
+					<th th:replace="fragments :: column_link('email', 'E-mail', 'tag', ${currentPage}, ${reverseDir}, ${moduleURL})" />
 					</th>
 					
 					<th class="hideable-column">
-					<th th:replace="fragments :: column_link('city', 'City', 'tag')" />
+					<th th:replace="fragments :: column_link('city', 'City', 'tag', ${currentPage}, ${reverseDir}, ${moduleURL})" />
 					</th>
 					
 					<th class="hideable-column">
-					<th th:replace="fragments :: column_link('state', 'State', 'tag')" />
+					<th th:replace="fragments :: column_link('state', 'State', 'tag', ${currentPage}, ${reverseDir}, ${moduleURL})" />
 					</th>
 					
-					<th th:replace="fragments :: column_link('country', 'Country', 'none')" />
-					<th th:replace="fragments :: column_link('enabled', 'Enabled', 'none')" />
+					<th th:replace="fragments :: column_link('country', 'Country', 'none', ${currentPage}, ${reverseDir}, ${moduleURL})" />
+					<th th:replace="fragments :: column_link('enabled', 'Enabled', 'none', ${currentPage}, ${reverseDir}, ${moduleURL})" />
 					<th></th>
 				</tr>								
 			</thead>
@@ -101,12 +101,9 @@
 	</div>	
 	
 	<div th:replace="fragments :: footer"></div>
-	
 </div>
 <script th:src="@{/js/common_list.js}"></script>
 <script type="text/javascript">
-	moduleURL = "[[@{/customers}]]";
-
 	$(document).ready(function() {
 		$(".link-delete").on("click", function(e) {
 			e.preventDefault();

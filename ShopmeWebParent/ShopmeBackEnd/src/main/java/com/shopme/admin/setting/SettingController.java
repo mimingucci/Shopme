@@ -27,61 +27,61 @@ public class SettingController {
 
 	@Autowired
 	private SettingService settingService;
-	
+
 	@Autowired
 	private CurrencyRepository currencyRepository;
-	
+
 	@GetMapping("/settings")
 	public String listAll(Model model) {
 		List<Setting> listSettings = settingService.listAllSettings();
 		List<Currency> listCurrencies = currencyRepository.findAllByOrderByNameAsc();
-		
+
 		model.addAttribute("listCurrencies", listCurrencies);
-		
+
 		for (Setting setting : listSettings) {
 			model.addAttribute(setting.getKey(), setting.getValue());
 		}
-		
+
 		return "settings/settings";
 	}
-	
+
 	@PostMapping("/settings/save_general")
 	public String saveGeneralSettings(@RequestParam("fileImage") MultipartFile multipartFile,
 			HttpServletRequest request, RedirectAttributes ra) throws IOException {
 		GeneralSettingBag settingBag = settingService.getGeneralSettings();
-		
+
 		saveSiteLogo(multipartFile, settingBag);
 		saveCurrencySymbol(request, settingBag);
-		
+
 		updateSettingValuesFromForm(request, settingBag.list());
-		
+
 		ra.addFlashAttribute("message", "General settings have been saved.");
-		
+
 		return "redirect:/settings";
 	}
-	
+
 	private void saveSiteLogo(MultipartFile multipartFile, GeneralSettingBag settingBag) throws IOException {
 		if (!multipartFile.isEmpty()) {
 			String fileName = org.springframework.util.StringUtils.cleanPath(multipartFile.getOriginalFilename());
 			String value = "/site-logo/" + fileName;
 			settingBag.updateSiteLogo(value);
-			
+
 			String uploadDir = "site-logo";
 			FileUploadUtil.removeDir(uploadDir);
 			FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
 		}
 	}
-	
+
 	private void saveCurrencySymbol(HttpServletRequest request, GeneralSettingBag settingBag) {
 		Integer currencyId = Integer.parseInt(request.getParameter("CURRENCY_ID"));
 		Optional<Currency> findByIdResult = currencyRepository.findById(currencyId);
-		
+
 		if (findByIdResult.isPresent()) {
 			Currency currency = findByIdResult.get();
 			settingBag.updateCurrencySymbol(currency.getSymbol());
 		}
 	}
-	
+
 	private void updateSettingValuesFromForm(HttpServletRequest request, List<Setting> listSettings) {
 		for (Setting setting : listSettings) {
 			String value = request.getParameter(setting.getKey());
@@ -89,7 +89,26 @@ public class SettingController {
 				setting.setValue(value);
 			}
 		}
-		
+
 		settingService.saveAll(listSettings);
+	}
+
+	@PostMapping("/settings/save_mail_server")
+	public String saveMailServerSettings(HttpServletRequest request, RedirectAttributes ra) {
+		List<Setting> mailServers = settingService.getMailServerSettings();
+		updateSettingValuesFromForm(request, mailServers);
+		ra.addFlashAttribute("message", "Mail server settings have been saved");
+
+		return "redirect:/settings#mailServer";
+	}
+	
+	@PostMapping("/settings/save_mail_templates")
+	public String saveMailTemplateSetttings(HttpServletRequest request, RedirectAttributes ra) {
+		List<Setting> mailTemplateSettings = settingService.getMailTemplateSettings();
+		updateSettingValuesFromForm(request, mailTemplateSettings);
+		
+		ra.addFlashAttribute("message", "Mail template settings have been saved");
+		
+		return "redirect:/settings#mailTemplates";
 	}
 }
