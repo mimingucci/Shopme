@@ -60,4 +60,14 @@ public class CustomerService {
 		}
 	}
 	
+	public void updateAuthenticationType(Customer customer, AuthenticationType auth) {
+		if(!customer.getAuthenticationType().equals(auth)) {
+			customerRepository.updateAuthenticationType(customer.getId(), auth);
+		}
+	}
+	
+	public Customer findCustomerByEmail(String email) {
+		return customerRepository.findByEmail(email);
+	}
+	
 }
