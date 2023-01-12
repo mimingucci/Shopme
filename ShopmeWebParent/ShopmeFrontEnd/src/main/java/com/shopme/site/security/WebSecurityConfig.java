@@ -11,13 +11,23 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.web.SecurityFilterChain;
+
+import com.shopme.site.oauth2.CustomerOauth2UserService;
+import com.shopme.site.oauth2.OAuth2LoginSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
 	@Autowired
 	private DatabaseLoginSuccessHandler loginSuccessHandler;
+	
+	@Autowired
+	private OAuth2LoginSuccessHandler successHandler;
+	
+	@Autowired
+	private CustomerOauth2UserService oauth2UserService;
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
@@ -46,7 +56,14 @@ public class WebSecurityConfig {
 				      .usernameParameter("email")
 				      .successHandler(loginSuccessHandler).permitAll()
 				.and()
-				   .logout().permitAll()
+				      .oauth2Login()
+				         .loginPage("/login")
+				         .userInfoEndpoint()
+				         .userService(oauth2UserService)
+				         .and()
+				         .successHandler(successHandler)
+				.and()
+				    .logout().permitAll()
 				.and()
 				   .rememberMe()
 				   .key("toivaban12345")
