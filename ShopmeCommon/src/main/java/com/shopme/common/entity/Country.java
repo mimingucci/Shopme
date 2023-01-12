@@ -78,13 +78,7 @@ public class Country {
 		this.id = id;
 	}
 
-	public Set<State> getStates() {
-		return states;
-	}
-
-	public void setStates(Set<State> states) {
-		this.states = states;
-	}
+	
 
 	
 }
