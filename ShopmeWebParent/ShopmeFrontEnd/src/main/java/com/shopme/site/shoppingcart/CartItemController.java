@@ -21,42 +21,42 @@ public class CartItemController {
 	@Autowired
 	private CartItemService cartService;
 	
-	@GetMapping("/cart")
-	public String viewCart(Model model, HttpServletRequest request) {
-		Customer customer=null;
-		try {
-			customer = getAuthenticatedCustomer(request);
-		} catch (CustomerNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		List<CartItem> cartItems = cartService.listCartItems(customer);
-		
-		float estimatedTotal = 0.0F;
-		
-		for (CartItem item : cartItems) {
-			estimatedTotal += item.getSubtotal();
-		}
-		
-		//Address defaultAddress = addressService.getDefaultAddress(customer);
-		//ShippingRate shippingRate = null;
-		boolean usePrimaryAddressAsDefault = false;
-		
-//		if (defaultAddress != null) {
-//			shippingRate = shipService.getShippingRateForAddress(defaultAddress);
-//		} else {
-//			usePrimaryAddressAsDefault = true;
-//			shippingRate = shipService.getShippingRateForCustomer(customer);
+//	@GetMapping("/cart")
+//	public String viewCart(Model model, HttpServletRequest request) {
+//		Customer customer=null;
+//		try {
+//			customer = getAuthenticatedCustomer(request);
+//		} catch (CustomerNotFoundException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
 //		}
-		
-		model.addAttribute("usePrimaryAddressAsDefault", usePrimaryAddressAsDefault);
-		//model.addAttribute("shippingSupported", shippingRate != null);
-		model.addAttribute("cartItems", cartItems);
-		model.addAttribute("estimatedTotal", estimatedTotal);
-		
-		return "cart/shopping_cart";
-	}
-	
+//		List<CartItem> cartItems = cartService.listCartItems(customer);
+//		
+//		float estimatedTotal = 0.0F;
+//		
+//		for (CartItem item : cartItems) {
+//			estimatedTotal += item.getSubtotal();
+//		}
+//		
+//		//Address defaultAddress = addressService.getDefaultAddress(customer);
+//		//ShippingRate shippingRate = null;
+//		boolean usePrimaryAddressAsDefault = false;
+//		
+////		if (defaultAddress != null) {
+////			shippingRate = shipService.getShippingRateForAddress(defaultAddress);
+////		} else {
+////			usePrimaryAddressAsDefault = true;
+////			shippingRate = shipService.getShippingRateForCustomer(customer);
+////		}
+//		
+//		model.addAttribute("usePrimaryAddressAsDefault", usePrimaryAddressAsDefault);
+//		//model.addAttribute("shippingSupported", shippingRate != null);
+//		model.addAttribute("cartItems", cartItems);
+//		model.addAttribute("estimatedTotal", estimatedTotal);
+//		
+//		return "cart/shopping_cart";
+//	}
+//	
 	public Customer getAuthenticatedCustomer(HttpServletRequest request) throws CustomerNotFoundException {
 		Object customer =  request.getUserPrincipal();
 		if(customer==null) {

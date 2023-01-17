@@ -6,6 +6,7 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -20,14 +21,21 @@ import net.bytebuddy.utility.RandomString;
 @Transactional
 public class CustomerService {
 
-	@Autowired
+	
 	private CustomerRepository customerRepository;
 	
-	@Autowired
+	
 	private CountryRepository countryRepository;
 	
-	@Autowired
+	
 	private PasswordEncoder encoder;
+	
+	@Autowired
+	public CustomerService(@Lazy PasswordEncoder encoder, CustomerRepository customerRepository, CountryRepository countryRepository) {
+		this.encoder=encoder;
+		this.customerRepository=customerRepository;
+		this.countryRepository=countryRepository;
+	}
 	
 	public List<Country> listAllCountries(){
 		return countryRepository.findAllByOrderByNameAsc();

@@ -5,6 +5,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,11 +21,17 @@ import com.shopme.site.customer.CustomerService;
 @Controller
 public class AddressController {
 
-	@Autowired
+	
 	private AddressService addressService;
 	
-	@Autowired
+	
 	private CustomerService customerService;
+	
+	@Autowired
+	public AddressController(AddressService addressService,@Lazy CustomerService customerService) {
+		this.addressService=addressService;
+		this.customerService=customerService;
+	}
 	
 	@GetMapping("/address_book")
 	public String showAddressBook(Model model, HttpServletRequest request) {

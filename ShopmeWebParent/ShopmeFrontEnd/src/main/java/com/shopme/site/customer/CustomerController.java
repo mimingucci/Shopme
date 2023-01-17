@@ -8,6 +8,7 @@ import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Controller;
@@ -24,8 +25,14 @@ import com.shopme.site.setting.SettingService;
 @Controller
 public class CustomerController {
 
-	@Autowired
+	
 	private CustomerService customerService;
+	
+	@Autowired
+	public CustomerController(@Lazy CustomerService customerService) {
+		// TODO Auto-generated constructor stub
+		this.customerService=customerService;
+	}
 	
 	@Autowired
 	private SettingService settingService;
