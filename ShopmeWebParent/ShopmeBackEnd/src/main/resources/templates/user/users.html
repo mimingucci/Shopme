@@ -15,7 +15,7 @@
 		<a th:href="@{/users/export/pdf}" class="fas fa-file-pdf fa-2x icon-dark"></a>		
 	</div>
 	
-	<div th:replace="fragments :: search_form_and_message" />
+	<div th:replace="fragments :: search_form_and_message(${moduleURL})" />
 	
 	<div class="full-details">
 		<table class="table table-bordered table-striped table-hover table-responsive-xl">
@@ -70,6 +70,6 @@
 	<div th:replace="fragments :: footer"></div>
 	
 </div>
-
+<script th:src="@{/js/common_list.js}"></script>
 </body>
 </html>

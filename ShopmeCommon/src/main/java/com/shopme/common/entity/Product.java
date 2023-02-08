@@ -19,6 +19,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.shopme.common.Constants;
+
 @Entity
 @Table(name = "products")
 public class Product {
@@ -311,7 +313,7 @@ public class Product {
 		if (id == null || mainImage == null)
 			return "/images/image-thumbnail.png";
 
-		return "../product-images/" + this.id + "/" + this.mainImage;
+		return Constants.S3_BASE_URI+"/product-images/" + this.id + "/" + this.mainImage;
 	}
 
 	public boolean containsImageName(String imageName) {
@@ -348,7 +350,7 @@ public class Product {
 		if (id == null || mainImage == null)
 			return "/images/image-thumbnail.png";
 
-		return "../../product-images/" + this.id + "/" + this.mainImage;
+		return Constants.S3_BASE_URI+"/product-images/" + this.id + "/" + this.mainImage;
 	}
 
 	@Transient
