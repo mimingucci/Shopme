@@ -18,15 +18,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.shopme.admin.AmazonS3Util;
 import com.shopme.admin.FileUploadUtil;
+import com.shopme.admin.setting.SettingRepository;
 import com.shopme.admin.user.UserService;
+import com.shopme.common.Constants;
 import com.shopme.common.entity.Role;
 import com.shopme.common.entity.User;
 
 @Controller
 public class UserController {
 	private String defaultRedirectURL = "redirect:/users/page/1?sortField=firstName&sortDir=asc";
-	
+	@Autowired
+	private SettingRepository repo;
 	
 	@Autowired
 	private UserService service;
@@ -38,7 +42,6 @@ public class UserController {
 		
 		User user = new User();
 		user.setEnabled(true);
-		
 		model.addAttribute("user", user);
 		model.addAttribute("listRoles", listRoles);
 		model.addAttribute("pageTitle", "Create New User");
@@ -63,9 +66,9 @@ public class UserController {
 			User savedUser = service.save(user);
 			
 			String uploadDir = "user-photos/" + savedUser.getId();
-		    FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
-//			AmazonS3Util.removeFolder(uploadDir);
-//			AmazonS3Util.uploadFile(uploadDir, fileName, multipartFile.getInputStream());			
+//		    FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
+			AmazonS3Util.removeFolder(uploadDir);
+			AmazonS3Util.uploadFile(uploadDir, fileName, multipartFile.getInputStream());			
 		} else {
 			if (user.getPhotos().isEmpty()) user.setPhotos(null);
 			service.save(user);

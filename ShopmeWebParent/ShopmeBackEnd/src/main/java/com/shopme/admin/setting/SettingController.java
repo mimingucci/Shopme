@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.shopme.admin.AmazonS3Util;
 import com.shopme.admin.FileUploadUtil;
 import com.shopme.admin.setting.currency.CurrencyRepository;
 import com.shopme.common.entity.Currency;
@@ -63,12 +64,14 @@ public class SettingController {
 	private void saveSiteLogo(MultipartFile multipartFile, GeneralSettingBag settingBag) throws IOException {
 		if (!multipartFile.isEmpty()) {
 			String fileName = org.springframework.util.StringUtils.cleanPath(multipartFile.getOriginalFilename());
-			String value = "/site-logo/" + fileName;
+			String value = "site-logo/" + fileName;
 			settingBag.updateSiteLogo(value);
 
 			String uploadDir = "site-logo";
-			FileUploadUtil.removeDir(uploadDir);
-			FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
+//			FileUploadUtil.removeDir(uploadDir);
+//			FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
+			AmazonS3Util.removeFolder(uploadDir);
+			AmazonS3Util.uploadFile(uploadDir, fileName, multipartFile.getInputStream());
 		}
 	}
 

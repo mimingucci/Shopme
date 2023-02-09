@@ -1,6 +1,8 @@
 package com.shopme.admin.product;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -24,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fasterxml.jackson.core.sym.Name;
+import com.shopme.admin.AmazonS3Util;
 import com.shopme.admin.FileUploadUtil;
 import com.shopme.admin.brand.BrandService;
 import com.shopme.admin.security.ShopmeUserDetails;
@@ -117,18 +120,20 @@ public class ProductController {
 		//ProductSaveHelper.saveUploadedImages(mainImageMultipart, extraImageMultiparts, savedProduct);
 		if (!mainImageMultipart.isEmpty()) {
 			String fileName = StringUtils.cleanPath(mainImageMultipart.getOriginalFilename());
-			String uploadDir = "../product-images/" + savedProduct.getId();			
-			FileUploadUtil.saveFile(uploadDir, fileName, mainImageMultipart);					
+			String uploadDir = "product-images/" + savedProduct.getId();
+//			FileUploadUtil.saveFile(uploadDir, fileName, mainImageMultipart);	
+			AmazonS3Util.uploadFile(uploadDir, fileName, mainImageMultipart.getInputStream());
 		}
 		
 		if (extraImageMultiparts.length > 0) {
-			String uploadDir = "../product-images/" + savedProduct.getId() + "/extras";
+			String uploadDir = "product-images/" + savedProduct.getId() + "/extras";
 			
 			for (MultipartFile multipartFile : extraImageMultiparts) {
 				if (multipartFile.isEmpty()) continue;
 				
 				String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
-				FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);	
+//				FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);	
+				AmazonS3Util.uploadFile(uploadDir, fileName, multipartFile.getInputStream());
 			}
 		}
 		deleteExtrasImagesWereDeletedInForm(product);
@@ -147,7 +152,7 @@ public class ProductController {
 	}
 	
 	static void deleteMainImageIfMainImageWereUploaded(Product product) throws IOException {
-		 String dir="../product-images/"+product.getId();
+		 String dir="product-images/"+product.getId();
 		 String newMainImageName=product.getMainImagePath();
 		   List<String> listFolder=new ArrayList<>();
 		   Files.list(Paths.get(dir)).forEach(file->{
@@ -155,6 +160,7 @@ public class ProductController {
 			   if(newMainImageName.equals(fileName)) {
 				  try {
 					Files.delete(file);
+					AmazonS3Util.deleteFile(fileName);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -165,7 +171,7 @@ public class ProductController {
 	
 	
 	public void deleteExtrasImagesWereDeletedInForm(Product product) {
-		 String extrasFileDir="../product-images/"+product.getId()+"/extras";
+		 String extrasFileDir="product-images/"+product.getId()+"/extras";
 		 Path dirPath= Paths.get(extrasFileDir);
 		 try {
 			Files.list(dirPath).forEach(file ->{
@@ -173,6 +179,7 @@ public class ProductController {
 				if(!product.containsImageName(fileName)) {
 					try {
 						Files.delete(file);
+						AmazonS3Util.deleteFile(fileName);
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -298,12 +305,13 @@ public class ProductController {
 			Model model, RedirectAttributes redirectAttributes) {
 		try {
 			productService.delete(id);
-			String productExtraImagesDir = "../product-images/" + id + "/extras";
-			String productImagesDir = "../product-images/" + id;
+			String productExtraImagesDir = "product-images/" + id + "/extras";
+			String productImagesDir = "product-images/" + id;
 			
-			FileUploadUtil.removeDir(productExtraImagesDir);
-			FileUploadUtil.removeDir(productImagesDir);
-			
+			//FileUploadUtil.removeDir(productExtraImagesDir);
+			//FileUploadUtil.removeDir(productImagesDir);
+			AmazonS3Util.removeFolder(productExtraImagesDir);
+			AmazonS3Util.removeFolder(productImagesDir);
 			redirectAttributes.addFlashAttribute("message", 
 					"The product ID " + id + " has been deleted successfully");
 		} catch (Exception ex) {
