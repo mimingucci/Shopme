@@ -1,9 +1,10 @@
 server:
-  port: 80
+  port: 801
 #  servlet:
 #    context-path: /Shopme
 spring:
-  
+#  autoconfigure:
+#    exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
   datasource:
     password: Andrew1122:))
     url: jdbc:mysql://localhost:2907/shopmedb
@@ -29,4 +30,5 @@ spring:
             scope:
             - email
             - profile 
+           
 

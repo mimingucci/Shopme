@@ -51,7 +51,7 @@
 				</div>
 			</div>
 		</div>
-		
+	    
 		<th:block th:each="address, status: ${listAddresses}">
 		<div class="col-sm-6 mt-2">
 			<div class="card" th:classappend="${address.defaultForShipping ? 'bg-warning' : ''}">
@@ -92,7 +92,8 @@
 				</div>
 			</div>
 		</div>		
-		</th:block>		
+		</th:block>
+				
 	</div>
 	<div>&nbsp;</div>
 	<div th:replace="fragments :: confirm_modal"></div>

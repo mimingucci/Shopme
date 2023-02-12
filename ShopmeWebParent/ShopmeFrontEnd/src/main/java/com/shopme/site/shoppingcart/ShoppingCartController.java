@@ -66,6 +66,7 @@ public class ShoppingCartController {
 	public Customer getAuthenticatedCustomer(HttpServletRequest request) {
 		String email=null;
 		Object principal = request.getUserPrincipal();
+		//System.out.println("principal: "+principal.get);
 		if (principal == null) return null;
 		
 		String customerEmail = null;
@@ -79,7 +80,7 @@ public class ShoppingCartController {
 			CustomerOauth2User oauth2User = (CustomerOauth2User) oauth2Token.getPrincipal();
 			customerEmail = oauth2User.getEmail();
 		}
-		Customer customer=customerRepository.findByEmail(email);
+		Customer customer=customerRepository.findByEmail(customerEmail);
 		return customer;
 	}
 }

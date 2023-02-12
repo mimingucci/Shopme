@@ -1,7 +1,9 @@
 package com.shopme.site.checkout;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,10 +12,12 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import com.shopme.common.entity.Address;
 import com.shopme.common.entity.CartItem;
 import com.shopme.common.entity.Customer;
+import com.shopme.common.entity.Order;
 import com.shopme.common.entity.ShippingRate;
 import com.shopme.common.exception.CustomerNotFoundException;
 import com.shopme.site.address.AddressService;
@@ -25,7 +29,6 @@ import com.shopme.site.shoppingcart.ShoppingCartService;
 @Controller
 public class CheckoutController {
 	@Autowired private CheckoutService checkoutService;
-	//@Autowired private ControllerHelper controllerHelper;
 	@Autowired private AddressService addressService;
 	@Autowired private ShippingRateService shipService;
 	@Autowired private ShoppingCartService cartService;
@@ -47,6 +50,7 @@ public class CheckoutController {
 		Customer customer= customerRepository.findByEmail(emailCustomer);
 		
 		Address defaultAddress = addressService.getDefaultAddress(customer);
+		System.out.println("State: "+defaultAddress.getState());
 		ShippingRate shippingRate = null;
 		
 		if (defaultAddress != null) {
@@ -56,7 +60,7 @@ public class CheckoutController {
 			model.addAttribute("shippingAddress", customer.toString());
 			shippingRate = shipService.getShippingRateForCustomer(customer);
 		}
-		
+		System.out.println(shippingRate);
 		if (shippingRate == null) {
 			return "redirect:/cart";
 		}
@@ -73,5 +77,6 @@ public class CheckoutController {
 		
 		return "checkout/checkout";
 	}
+	
 	
 }

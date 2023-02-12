@@ -10,28 +10,30 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.shopme.common.Constants;
+
 @Entity
 @Table(name = "product_images")
 public class ProductImage {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Integer id;
-  
-  public Integer getId() {
-	return id;
-}
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
 
-public void setId(Integer id) {
-	this.id = id;
-}
+	public Integer getId() {
+		return id;
+	}
 
-@Column(nullable = false)
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	@Column(nullable = false)
 	private String name;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "product_id")
 	private Product product;
-	
+
 	public ProductImage() {
 	}
 
@@ -40,7 +42,6 @@ public void setId(Integer id) {
 		this.name = name;
 		this.product = product;
 	}
-
 
 	public ProductImage(String name, Product product) {
 		this.name = name;
@@ -62,9 +63,9 @@ public void setId(Integer id) {
 	public void setProduct(Product product) {
 		this.product = product;
 	}
-	
+
 	@Transient
 	public String getImagePath() {
-		return "/product-images/" + product.getId() + "/extras/" + this.name;
+		return Constants.S3_BASE_URI+"/product-images/" + product.getId() + "/extras/" + this.name;
 	}
 }

@@ -112,5 +112,28 @@ public class CustomerService {
 		}
 	}
 	
+	public void update(Customer customerInForm) {
+		Customer customerInDB = customerRepository.findById(customerInForm.getId()).get();
+		
+		if (customerInDB.getAuthenticationType().equals(AuthenticationType.DATABASE)) {
+			if (!customerInForm.getPassword().isEmpty()) {
+				String encodedPassword = encoder.encode(customerInForm.getPassword());
+				customerInForm.setPassword(encodedPassword);			
+			} else {
+				customerInForm.setPassword(customerInDB.getPassword());
+			}		
+		} else {
+			customerInForm.setPassword(customerInDB.getPassword());
+		}
+		
+		customerInForm.setEnabled(customerInDB.isEnabled());
+		customerInForm.setCreatedTime(customerInDB.getCreatedTime());
+		customerInForm.setVerificationCode(customerInDB.getVerificationCode());
+		customerInForm.setAuthenticationType(customerInDB.getAuthenticationType());
+		customerInForm.setResetPasswordToken(customerInDB.getResetPasswordToken());
+		
+		customerRepository.save(customerInForm);
+	}
+	
 	
 }

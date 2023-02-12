@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -35,21 +36,21 @@ public class AddressController {
 	
 	@GetMapping("/address_book")
 	public String showAddressBook(Model model, HttpServletRequest request) {
-		//Customer customer = controllerHelper.getAuthenticatedCustomer(request);
 		String customerName=request.getUserPrincipal().getName();
 		Customer customer = customerService.findCustomerByEmail(customerName);
 		List<Address> listAddresses = addressService.listAddressBook(customer);
 		
 		boolean usePrimaryAddressAsDefault = true;
+		if(listAddresses!=null || listAddresses.size()>0)
 		for (Address address : listAddresses) {
 			if (address.isDefaultForShipping()) {
 				usePrimaryAddressAsDefault = false;
 				break;
 			}
 		}
-		
+		model.addAttribute("redirectedFromCheckoutPage", false);
 		model.addAttribute("listAddresses", listAddresses);
-		model.addAttribute("customer", customer);
+		model.addAttribute("customer", customer.getFullName()+", "+customer.getAddressLine1()+", "+customer.getCity()+", "+customer.getCountry().getName()+". Postal Code: "+customer.getPostalCode()+". Phone Number: "+customer.getPhoneNumber());
 		model.addAttribute("usePrimaryAddressAsDefault", usePrimaryAddressAsDefault);
 		
 		return "address_book/addresses";
@@ -67,7 +68,7 @@ public class AddressController {
 	}
 	
 	@PostMapping("/address_book/save")
-	public String saveAddress(Address address, HttpServletRequest request, RedirectAttributes ra) {
+	public String saveAddress(@ModelAttribute(name = "address") Address address, HttpServletRequest request, RedirectAttributes ra) {
 		//Customer customer = controllerHelper.getAuthenticatedCustomer(request);
 		String emailCustomer=request.getUserPrincipal().getName();
 		Customer customer=customerService.findCustomerByEmail(emailCustomer);

@@ -10,18 +10,18 @@ import com.shopme.admin.setting.SettingRepository;
 import com.shopme.common.Constants;
 
 public class PagingAndSortingHelper {
-	
+	@Autowired
 	private SettingRepository repo;
 	
-	@Autowired
-	public PagingAndSortingHelper(SettingRepository repo) {
-		super();
-		this.repo = repo;
-	}
-	public String getSettingValueByKey(String key) {
-		String value=repo.findValueByKey(key);
-		return value;
-	}
+//	@Autowired
+//	public PagingAndSortingHelper(SettingRepository repo) {
+//		super();
+//		this.repo = repo;
+//	}
+//	public String getSettingValueByKey(String key) {
+//		String value=repo.findValueByKey(key);
+//		return value;
+//	}
 	public static void updateModelAttributes(int pageNum, Page<?> page, String listName, Model model) {
 		PagingAndSortingHelper helper=new PagingAndSortingHelper();
 		List<?> listItems = page.getContent();
@@ -32,7 +32,7 @@ public class PagingAndSortingHelper {
 		if (endCount > page.getTotalElements()) {
 			endCount = page.getTotalElements();
 		}
-	    model.addAttribute("siteLogo", Constants.S3_BASE_URI+"/"+helper.getSettingValueByKey("SITE_LOGO"));
+	  //  model.addAttribute("siteLogo", Constants.S3_BASE_URI+"/"+helper.getSettingValueByKey("SITE_LOGO"));
 		model.addAttribute("currentPage", pageNum);
 		model.addAttribute("totalPages", page.getTotalPages());
 		model.addAttribute("startCount", startCount);

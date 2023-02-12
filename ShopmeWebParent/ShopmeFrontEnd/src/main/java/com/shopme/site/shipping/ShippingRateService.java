@@ -1,9 +1,12 @@
 package com.shopme.site.shipping;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.shopme.common.entity.Address;
+import com.shopme.common.entity.Country;
 import com.shopme.common.entity.Customer;
 import com.shopme.common.entity.ShippingRate;
 
@@ -28,6 +31,6 @@ public class ShippingRateService {
 			state = address.getCity();
 		}
 
-		return repo.findByCountryAndState(address.getCountry(), state);
+		return repo.findShippingRateByCountryAndState(address.getCountry().getId(), state);
 	}
 }
