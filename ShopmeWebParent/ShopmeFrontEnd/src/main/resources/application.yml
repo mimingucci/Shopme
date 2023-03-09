@@ -1,13 +1,13 @@
 server:
   port: 801
-#  servlet:
-#    context-path: /Shopme
+  servlet:
+    context-path: /Shopme
 spring:
 #  autoconfigure:
 #    exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
   datasource:
     password: Andrew1122:))
-    url: jdbc:mysql://localhost:2907/shopmedb
+    url: jdbc:mysql://localhost:2907/shopmedb?sessionVariables=sql_mode='NO_ENGINE_SUBSTITUTION'&jdbcCompliantTruncation=false
     username: root
     hikari:
         minimum-idle: 1
@@ -19,7 +19,7 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
         format_sql: true
-    show-sql: true
+    show-sql: false
   security:
     oauth2:
       client:
@@ -30,5 +30,9 @@ spring:
             scope:
             - email
             - profile 
-           
-
+           facebook:
+            client-id: 677674537491975
+            client-secret: c62c4a32f2df736db885fe85cf6b4eb1
+            scope:
+            - email
+            - public_profile

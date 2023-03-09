@@ -42,7 +42,12 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
 		if (clientName.equals("Google")) {
 			return AuthenticationType.GOOGLE;
 		} else {
-			return AuthenticationType.DATABASE;
+			if(clientName.equals("Facebook")) {
+				return AuthenticationType.FACEBOOK;
+			}else {
+				return AuthenticationType.DATABASE;
+			}
+			
 		}
 	}
 }
