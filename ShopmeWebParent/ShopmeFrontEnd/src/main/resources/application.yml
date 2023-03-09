@@ -1,7 +1,7 @@
 server:
   port: 801
-  servlet:
-    context-path: /Shopme
+#  servlet:
+#    context-path: /Shopme
 spring:
 #  autoconfigure:
 #    exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
