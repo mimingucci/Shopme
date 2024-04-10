@@ -67,11 +67,11 @@ public class SettingController {
 			String value = "site-logo/" + fileName;
 			settingBag.updateSiteLogo(value);
 
-			String uploadDir = "site-logo";
-//			FileUploadUtil.removeDir(uploadDir);
-//			FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
-			AmazonS3Util.removeFolder(uploadDir);
-			AmazonS3Util.uploadFile(uploadDir, fileName, multipartFile.getInputStream());
+			String uploadDir = "../site-logo";
+			FileUploadUtil.removeDir(uploadDir);
+			FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
+//			AmazonS3Util.removeFolder(uploadDir);
+//			AmazonS3Util.uploadFile(uploadDir, fileName, multipartFile.getInputStream());
 		}
 	}
 

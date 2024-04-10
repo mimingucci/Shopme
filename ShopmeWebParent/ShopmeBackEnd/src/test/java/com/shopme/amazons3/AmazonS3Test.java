@@ -12,7 +12,7 @@ public class AmazonS3Test {
 
 	@Test
 	public void testListFolder() {
-		AmazonS3Util.listFolder("user-photos/10");
+//		AmazonS3Util.listFolder("user-photos/10");
 	}
 	
 	@Test
@@ -21,6 +21,6 @@ public class AmazonS3Test {
 		String path="C:\\Users\\gtvvu\\Documents\\Zalo Received Files\\Anh zalo\\"+fileName;
 		String folder="test";
 		InputStream stream=new FileInputStream(path);
-		AmazonS3Util.uploadFile(folder, fileName, stream);
+//		AmazonS3Util.uploadFile(folder, fileName, stream);
 	}
 }
