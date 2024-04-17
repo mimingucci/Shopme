@@ -21,6 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.shopme.admin.AmazonS3Util;
 import com.shopme.admin.FileUploadUtil;
 import com.shopme.admin.setting.SettingRepository;
+import com.shopme.admin.user.UserNotFoundException;
 import com.shopme.admin.user.UserService;
 import com.shopme.common.Constants;
 import com.shopme.common.entity.Role;
@@ -126,6 +127,25 @@ public class UserController {
 		redirectAttributes.addFlashAttribute("message", message);
 		
 		return defaultRedirectURL;
+	}
+	
+	@GetMapping("/users/edit/{id}")
+	public String editUser(@PathVariable(name = "id") Integer id, 
+			Model model,
+			RedirectAttributes redirectAttributes) {
+		try {
+			User user = service.get(id);
+			List<Role> listRoles = service.listRoles();
+			
+			model.addAttribute("user", user);
+			model.addAttribute("pageTitle", "Edit User (ID: " + id + ")");
+			model.addAttribute("listRoles", listRoles);
+			
+			return "user/user_form";
+		} catch (UserNotFoundException ex) {
+			redirectAttributes.addFlashAttribute("message", ex.getMessage());
+			return defaultRedirectURL;
+		}
 	}
 	
 }

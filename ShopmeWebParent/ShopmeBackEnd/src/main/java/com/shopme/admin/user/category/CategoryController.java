@@ -17,6 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.shopme.admin.FileUploadUtil;
 import com.shopme.common.entity.Category;
+import com.shopme.common.exception.CategoryNotFoundException;
 
 @Controller
 public class CategoryController {
@@ -100,5 +101,23 @@ public class CategoryController {
 		
 		ra.addFlashAttribute("message", "The category has been saved successfully.");
 		return "redirect:/categories";
+	}
+    
+    @GetMapping("/categories/edit/{id}")
+	public String editCategory(@PathVariable(name = "id") Integer id, Model model,
+			RedirectAttributes ra) {
+		try {
+			Category category = service.get(id);
+			List<Category> listCategories = service.listCategoriesUsedInForm();
+			
+			model.addAttribute("category", category);
+			model.addAttribute("listCategories", listCategories);
+			model.addAttribute("pageTitle", "Edit Category (ID: " + id + ")");
+			
+			return "categories/category_form";			
+		} catch (CategoryNotFoundException ex) {
+			ra.addFlashAttribute("message", ex.getMessage());
+			return "redirect:/categories";
+		}
 	}
 }
