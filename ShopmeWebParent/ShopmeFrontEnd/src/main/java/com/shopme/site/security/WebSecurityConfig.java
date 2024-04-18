@@ -75,10 +75,10 @@ public class WebSecurityConfig {
 	}
 	
 	@Bean
-	   public AuthenticationManager authenticationManager(
+	public AuthenticationManager authenticationManager(
 	           AuthenticationConfiguration authConfig) throws Exception {
-	       return authConfig.getAuthenticationManager();
-	   }
+	    return authConfig.getAuthenticationManager();
+	}   
 	
 	@Bean
 	public DaoAuthenticationProvider authenticationProvider() {
@@ -92,7 +92,6 @@ public class WebSecurityConfig {
 	@Bean
 	public WebSecurityCustomizer webSecurityCustomizer() {
 		return (web) -> web.ignoring().antMatchers("/images/**", "/js/**", "/webjars/**");
-
 	}
 
 }
