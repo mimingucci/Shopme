@@ -44,12 +44,6 @@ public class CategoryController {
 		return "redirect:/categories";
 	}
     
-    @GetMapping("/categories/delete/{id}")
-    public String deleteCategory(@Param("id") Integer id) {
-    	System.out.println(id);
-    	return "redirect:/categories";
-    }
-    
     @GetMapping("/categories/page/{pageNum}")
     public String sortAndPagingCategories(
     		@PathVariable("pageNum") int pageNum,
