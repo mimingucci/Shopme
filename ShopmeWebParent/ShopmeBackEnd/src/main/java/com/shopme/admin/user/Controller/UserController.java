@@ -67,9 +67,9 @@ public class UserController {
 			User savedUser = service.save(user);
 			
 			String uploadDir = "user-photos/" + savedUser.getId();
-		    FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
-//			AmazonS3Util.removeFolder(uploadDir);
-//			AmazonS3Util.uploadFile(uploadDir, fileName, multipartFile.getInputStream());			
+//		    FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
+			AmazonS3Util.removeFolder(uploadDir);
+			AmazonS3Util.uploadFile(uploadDir, fileName, multipartFile.getInputStream());			
 		} else {
 			if (user.getPhotos().isEmpty()) user.setPhotos(null);
 			service.save(user);
@@ -146,6 +146,24 @@ public class UserController {
 			redirectAttributes.addFlashAttribute("message", ex.getMessage());
 			return defaultRedirectURL;
 		}
+	}
+	
+	@GetMapping("/users/delete/{id}")
+	public String deleteUser(@PathVariable(name = "id") Integer id, 
+			Model model,
+			RedirectAttributes redirectAttributes) {
+		try {
+			service.delete(id);
+			String userPhotosDir = "user-photos/" + id;
+			AmazonS3Util.removeFolder(userPhotosDir);
+			
+			redirectAttributes.addFlashAttribute("message", 
+					"The user ID " + id + " has been deleted successfully");
+		} catch (UserNotFoundException ex) {
+			redirectAttributes.addFlashAttribute("message", ex.getMessage());
+		}
+		
+		return defaultRedirectURL;
 	}
 	
 }

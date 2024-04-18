@@ -40,11 +40,6 @@ public class Controller {
 	  return "navigation";
   }
   
-//  @GetMapping("/users")
-//  public String users() {
-//	  return "user/users";
-//  }
-  
   @GetMapping("/user_form")
   public String createNewUser() {
 	  return "user/user_form";
@@ -58,11 +53,4 @@ public class Controller {
 		
 		return "redirect:/";
 	}
-  
-  @GetMapping("/tes")
-  public String tes() {
-	  User user=userRepo.getUserByEmail("gtvvunguye@gmail.com");
-	  System.out.println(user.getFirstName());
-	  return "redirect:/login";
-  }
 }

@@ -117,12 +117,12 @@ public class ProductController {
 
 		Product savedProduct = productService.save(product);
         deleteMainImageIfMainImageWereUploaded(savedProduct);
-//		ProductSaveHelper.saveUploadedImages(mainImageMultipart, extraImageMultiparts, savedProduct);
+		ProductSaveHelper.saveUploadedImages(mainImageMultipart, extraImageMultiparts, savedProduct);
 		if (!mainImageMultipart.isEmpty()) {
 			String fileName = StringUtils.cleanPath(mainImageMultipart.getOriginalFilename());
 			String uploadDir = "product-images/" + savedProduct.getId();
-			FileUploadUtil.saveFile(uploadDir, fileName, mainImageMultipart);	
-//			AmazonS3Util.uploadFile(uploadDir, fileName, mainImageMultipart.getInputStream());
+//			FileUploadUtil.saveFile(uploadDir, fileName, mainImageMultipart);	
+			AmazonS3Util.uploadFile(uploadDir, fileName, mainImageMultipart.getInputStream());
 		}
 		
 		if (extraImageMultiparts.length > 0) {
@@ -132,8 +132,8 @@ public class ProductController {
 				if (multipartFile.isEmpty()) continue;
 				
 				String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
-				FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);	
-//				AmazonS3Util.uploadFile(uploadDir, fileName, multipartFile.getInputStream());
+//				FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);	
+				AmazonS3Util.uploadFile(uploadDir, fileName, multipartFile.getInputStream());
 			}
 		}
 		deleteExtrasImagesWereDeletedInForm(product);
@@ -158,12 +158,12 @@ public class ProductController {
 		   Files.list(Paths.get(dir)).forEach(file->{
 			   String fileName=file.toFile().getName();
 			   if(newMainImageName.equals(fileName)) {
-				  try {
-					Files.delete(file);
-//					AmazonS3Util.deleteFile(fileName);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+//				  try {
+//					Files.delete(file);
+					AmazonS3Util.deleteFile(fileName);
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
 			   }
 		   });
 	}
@@ -177,13 +177,13 @@ public class ProductController {
 			Files.list(dirPath).forEach(file ->{
 				String fileName=file.toFile().getName();
 				if(!product.containsImageName(fileName)) {
-					try {
-						Files.delete(file);
-//						AmazonS3Util.deleteFile(fileName);
-					} catch (IOException e) {
+//					try {
+//						Files.delete(file);
+						AmazonS3Util.deleteFile(fileName);
+//					} catch (IOException e) {
 						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+//						e.printStackTrace();
+//					}
 				}
 			});
 			
@@ -308,10 +308,10 @@ public class ProductController {
 			String productExtraImagesDir = "product-images/" + id + "/extras";
 			String productImagesDir = "product-images/" + id;
 			
-			FileUploadUtil.removeDir(productExtraImagesDir);
-			FileUploadUtil.removeDir(productImagesDir);
-//			AmazonS3Util.removeFolder(productExtraImagesDir);
-//			AmazonS3Util.removeFolder(productImagesDir);
+//			FileUploadUtil.removeDir(productExtraImagesDir);
+//			FileUploadUtil.removeDir(productImagesDir);
+			AmazonS3Util.removeFolder(productExtraImagesDir);
+			AmazonS3Util.removeFolder(productImagesDir);
 			redirectAttributes.addFlashAttribute("message", 
 					"The product ID " + id + " has been deleted successfully");
 		} catch (Exception ex) {

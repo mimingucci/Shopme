@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
+import com.shopme.common.Constants;
 import com.shopme.common.entity.setting.Setting;
 
 @Component
@@ -41,6 +42,7 @@ public class SettingFilter implements Filter{
 		});
 		
 		
+		request.setAttribute("S3_BASE_URI", Constants.S3_BASE_URI);
 		chain.doFilter(request, response);
 		
 	}
