@@ -1,7 +1,6 @@
-Link demo client's page: https://shopme-shopping.herokuapp.com/login
-Link demo admin's page: https://shopmeapp.herokuapp.com/login
-
-Update: links above are not available now due to my aws.amazon errors and i don't know how to fix this issue:((
+Link demo client's page: https://shopme-196d39bc58a3.herokuapp.com/
+Link demo admin's page: https://shopme-admin-a078d35ee7cf.herokuapp.com/    (Login with following account: + Email: nathihsa@gmail.com 
+                                                                                                           + Password: nathi2020)   
 
 Some images about my project:
 ![Form Login](https://github.com/mimingucci/Shopme/blob/main/Preview/x1.png)
