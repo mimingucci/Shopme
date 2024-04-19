@@ -52,9 +52,7 @@ public class UserController {
 	
 	@GetMapping("/users")
 	public String users(Model model) {
-		List<User> listUsers=service.listAll();
-		model.addAttribute("listUsers", listUsers);
-		return "/user/users";
+		return defaultRedirectURL;
 	}
 	
 	@PostMapping("/users/save")
