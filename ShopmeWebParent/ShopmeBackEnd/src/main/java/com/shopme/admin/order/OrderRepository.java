@@ -7,6 +7,9 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.shopme.common.entity.Order;
 
+import java.util.Date;
+import java.util.List;
+
 public interface OrderRepository extends JpaRepository<Order, Integer>{
 
 	@Query("SELECT o FROM Order o WHERE CONCAT('#', o.id) LIKE %?1% OR "
@@ -22,4 +25,9 @@ public interface OrderRepository extends JpaRepository<Order, Integer>{
 	public Page<Order> findAll(String keyword, Pageable pageable);
 	
 	public Long countById(Integer id);
+
+	@Query("SELECT NEW com.shopme.common.entity.order.Order(o.id, o.orderTime, o.productCost,"
+			+ " o.subtotal, o.total) FROM Order o WHERE"
+			+ " o.orderTime BETWEEN ?1 AND ?2 ORDER BY o.orderTime ASC")
+	public List<Order> findByOrderTimeBetween(Date startTime, Date endTime);
 }
