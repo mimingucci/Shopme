@@ -97,6 +97,8 @@
 <script type="text/javascript">
 	contextPath = "[[@{/}]]";
 	productId = "[[${product.id}]]";
+	var csrfHeaderName = "[[${_csrf?.headerName}]]";
+	var csrfValue = "[[${_csrf?.token}]]";
 
 	decimalSeparator = "[[${DECIMAL_POINT_TYPE == 'COMMA' ? ',' : '.'}]]";
 	thousandSeparator = "[[${THOUSANDS_POINT_TYPE == 'COMMA' ? ',' : '.'}]]";

@@ -50,7 +50,6 @@ public class CheckoutController {
 		Customer customer= customerRepository.findByEmail(emailCustomer);
 		
 		Address defaultAddress = addressService.getDefaultAddress(customer);
-		System.out.println("State: "+defaultAddress.getState());
 		ShippingRate shippingRate = null;
 		
 		if (defaultAddress != null) {
@@ -60,7 +59,6 @@ public class CheckoutController {
 			model.addAttribute("shippingAddress", customer.toString());
 			shippingRate = shipService.getShippingRateForCustomer(customer);
 		}
-		System.out.println(shippingRate);
 		if (shippingRate == null) {
 			return "redirect:/cart";
 		}
