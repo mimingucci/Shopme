@@ -11,7 +11,7 @@
 	<div class="row">
 		<div class="col-sm">
 			<div>
-				<img id="bigImage" th:src="@{${product.mainImageInDetailPage}}" class="img-fluid" index="0" />
+				<img id="bigImage" th:src="@{${product.mainImagePath}}" class="img-fluid" index="0" />
 			</div>
 			<div class="row justify-content-center">
 				<div class="m-2 border border-secondary p-1">
@@ -97,9 +97,7 @@
 <script type="text/javascript">
 	contextPath = "[[@{/}]]";
 	productId = "[[${product.id}]]";
-	var csrfHeaderName = "[[${_csrf.headerName}]]";
-	var csrfValue = "[[${_csrf.token}]]";	
-	
+
 	decimalSeparator = "[[${DECIMAL_POINT_TYPE == 'COMMA' ? ',' : '.'}]]";
 	thousandSeparator = "[[${THOUSANDS_POINT_TYPE == 'COMMA' ? ',' : '.'}]]";
 	
