@@ -34,4 +34,16 @@ public class SettingService {
 		
 		return currency.getCode();
 	}
+
+	public CurrencySettingBag getCurrencySettings() {
+		List<Setting> settings = settingRepo.findByCategory(SettingCategory.CURRENCY);
+		return new CurrencySettingBag(settings);
+	}
+
+	public EmailSettingBag getEmailSettings() {
+		List<Setting> settings = settingRepo.findByCategory(SettingCategory.MAIL_SERVER);
+		settings.addAll(settingRepo.findByCategory(SettingCategory.MAIL_TEMPLATES));
+
+		return new EmailSettingBag(settings);
+	}
 }

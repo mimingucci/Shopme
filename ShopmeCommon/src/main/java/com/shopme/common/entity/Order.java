@@ -1,286 +1,312 @@
 package com.shopme.common.entity;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "orders")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
-	
-	@Column(name = "first_name", nullable = false, length = 45)
-	private String firstName;
-	
-	@Column(name = "last_name", nullable = false, length = 45)
-	private String lastName;
-	
-	@Column(name = "phone_number", nullable = false, length = 15)
-	private String phoneNumber;
-	
-	@Column(name = "address_line_1", nullable = false, length = 64)
-	private String addressLine1;
-	
-	@Column(name = "address_line_2", length = 64)
-	private String addressLine2;
-	
-	@Column(nullable = false, length = 45)
-	private String city;
-	
-	@Column(nullable = false, length = 45)
-	private String state;
-	
-	@Column(name = "postal_code", nullable = false, length = 10)
-	private String postalCode;
-	@Column(nullable = false, length = 45)
-	private String country;
-	
-	private Date orderTime;
-	
-	private float shippingCost;
-	private float productCost;
-	private float subtotal;
-	private float tax;
-	private float total;
-	
-	private int deliverDays;
-	private Date deliverDate;
-	
-	@Enumerated(EnumType.STRING)
-	private PaymentMethod paymentMethod;
-	
-	@Enumerated(EnumType.STRING)
-	private OrderStatus status;
-	
-	@ManyToOne
-	@JoinColumn(name = "customer_id")
-	private Customer customer;
-	
-	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-	private Set<OrderDetail> orderDetails = new HashSet<>();
-	
-	public Order() {
-	}
-	
-	public Order(Integer id, Date orderTime, float productCost, float subtotal, float total) {
-		this.id = id;
-		this.orderTime = orderTime;
-		this.productCost = productCost;
-		this.subtotal = subtotal;
-		this.total = total;
-	}
+    private int id;
 
-	public int getId() {
-		return id;
-	}
+    @Column(name = "first_name", nullable = false, length = 45)
+    private String firstName;
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    @Column(name = "last_name", nullable = false, length = 45)
+    private String lastName;
 
-	public String getFirstName() {
-		return firstName;
-	}
+    @Column(name = "phone_number", nullable = false, length = 15)
+    private String phoneNumber;
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
+    @Column(name = "address_line_1", nullable = false, length = 64)
+    private String addressLine1;
 
-	public String getLastName() {
-		return lastName;
-	}
+    @Column(name = "address_line_2", length = 64)
+    private String addressLine2;
 
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
+    @Column(nullable = false, length = 45)
+    private String city;
 
-	public String getPhoneNumber() {
-		return phoneNumber;
-	}
+    @Column(nullable = false, length = 45)
+    private String state;
 
-	public void setPhoneNumber(String phoneNumber) {
-		this.phoneNumber = phoneNumber;
-	}
+    @Column(name = "postal_code", nullable = false, length = 10)
+    private String postalCode;
+    @Column(nullable = false, length = 45)
+    private String country;
 
-	public String getAddressLine1() {
-		return addressLine1;
-	}
+    private Date orderTime;
 
-	public void setAddressLine1(String addressLine1) {
-		this.addressLine1 = addressLine1;
-	}
+    private float shippingCost;
+    private float productCost;
+    private float subtotal;
+    private float tax;
+    private float total;
 
-	public String getAddressLine2() {
-		return addressLine2;
-	}
+    private int deliverDays;
+    private Date deliverDate;
 
-	public void setAddressLine2(String addressLine2) {
-		this.addressLine2 = addressLine2;
-	}
+    @Enumerated(EnumType.STRING)
+    private PaymentMethod paymentMethod;
 
-	public String getCity() {
-		return city;
-	}
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
 
-	public void setCity(String city) {
-		this.city = city;
-	}
+    @ManyToOne
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
 
-	public String getState() {
-		return state;
-	}
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<OrderDetail> orderDetails = new HashSet<>();
 
-	public void setState(String state) {
-		this.state = state;
-	}
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("updatedTime ASC")
+    private List<OrderTrack> orderTracks = new ArrayList<>();
 
-	public String getPostalCode() {
-		return postalCode;
-	}
+    public Order() {
+    }
 
-	public void setPostalCode(String postalCode) {
-		this.postalCode = postalCode;
-	}
+    public Order(Integer id, Date orderTime, float productCost, float subtotal, float total) {
+        this.id = id;
+        this.orderTime = orderTime;
+        this.productCost = productCost;
+        this.subtotal = subtotal;
+        this.total = total;
+    }
 
-	public String getCountry() {
-		return country;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public void setCountry(String country) {
-		this.country = country;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public Date getOrderTime() {
-		return orderTime;
-	}
+    public String getFirstName() {
+        return firstName;
+    }
 
-	public void setOrderTime(Date orderTime) {
-		this.orderTime = orderTime;
-	}
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
 
-	public float getShippingCost() {
-		return shippingCost;
-	}
+    public String getLastName() {
+        return lastName;
+    }
 
-	public void setShippingCost(float shippingCost) {
-		this.shippingCost = shippingCost;
-	}
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
 
-	public float getProductCost() {
-		return productCost;
-	}
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
 
-	public void setProductCost(float productCost) {
-		this.productCost = productCost;
-	}
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
 
-	public float getSubtotal() {
-		return subtotal;
-	}
+    public String getAddressLine1() {
+        return addressLine1;
+    }
 
-	public void setSubtotal(float subtotal) {
-		this.subtotal = subtotal;
-	}
+    public void setAddressLine1(String addressLine1) {
+        this.addressLine1 = addressLine1;
+    }
 
-	public float getTax() {
-		return tax;
-	}
+    public String getAddressLine2() {
+        return addressLine2;
+    }
 
-	public void setTax(float tax) {
-		this.tax = tax;
-	}
+    public void setAddressLine2(String addressLine2) {
+        this.addressLine2 = addressLine2;
+    }
 
-	public float getTotal() {
-		return total;
-	}
+    public String getCity() {
+        return city;
+    }
 
-	public void setTotal(float total) {
-		this.total = total;
-	}
+    public void setCity(String city) {
+        this.city = city;
+    }
 
-	public int getDeliverDays() {
-		return deliverDays;
-	}
+    public String getState() {
+        return state;
+    }
 
-	public void setDeliverDays(int deliverDays) {
-		this.deliverDays = deliverDays;
-	}
+    public void setState(String state) {
+        this.state = state;
+    }
 
-	public Date getDeliverDate() {
-		return deliverDate;
-	}
+    public String getPostalCode() {
+        return postalCode;
+    }
 
-	public void setDeliverDate(Date deliverDate) {
-		this.deliverDate = deliverDate;
-	}
+    public void setPostalCode(String postalCode) {
+        this.postalCode = postalCode;
+    }
 
-	public PaymentMethod getPaymentMethod() {
-		return paymentMethod;
-	}
+    public String getCountry() {
+        return country;
+    }
 
-	public void setPaymentMethod(PaymentMethod paymentMethod) {
-		this.paymentMethod = paymentMethod;
-	}
+    public void setCountry(String country) {
+        this.country = country;
+    }
 
-	public OrderStatus getStatus() {
-		return status;
-	}
+    public Date getOrderTime() {
+        return orderTime;
+    }
 
-	public void setStatus(OrderStatus status) {
-		this.status = status;
-	}
+    public void setOrderTime(Date orderTime) {
+        this.orderTime = orderTime;
+    }
 
-	public Customer getCustomer() {
-		return customer;
-	}
+    public float getShippingCost() {
+        return shippingCost;
+    }
 
-	public void setCustomer(Customer customer) {
-		this.customer = customer;
-	}
+    public void setShippingCost(float shippingCost) {
+        this.shippingCost = shippingCost;
+    }
 
-	public Set<OrderDetail> getOrderDetails() {
-		return orderDetails;
-	}
+    public float getProductCost() {
+        return productCost;
+    }
 
-	public void setOrderDetails(Set<OrderDetail> orderDetails) {
-		this.orderDetails = orderDetails;
-	}
-	
-	public void copyAddressFromCustomer() {
-		setFirstName(customer.getFirstName());
-		setLastName(customer.getLastName());
-		setPhoneNumber(customer.getPhoneNumber());
-		setAddressLine1(customer.getAddressLine1());
-		setAddressLine2(customer.getAddressLine2());
-		setCity(customer.getCity());
-		setCountry(customer.getCountry().getName());
-		setPostalCode(customer.getPostalCode());
-		setState(customer.getState());		
-	}
-	
+    public void setProductCost(float productCost) {
+        this.productCost = productCost;
+    }
 
-	@Override
-	public String toString() {
-		return "Order [id=" + id + ", subtotal=" + subtotal + ", paymentMethod=" + paymentMethod + ", status=" + status
-				+ ", customer=" + customer.getFullName() + "]";
-	}
-	
-	
+    public float getSubtotal() {
+        return subtotal;
+    }
 
-	
+    public void setSubtotal(float subtotal) {
+        this.subtotal = subtotal;
+    }
+
+    public float getTax() {
+        return tax;
+    }
+
+    public void setTax(float tax) {
+        this.tax = tax;
+    }
+
+    public float getTotal() {
+        return total;
+    }
+
+    public void setTotal(float total) {
+        this.total = total;
+    }
+
+    public int getDeliverDays() {
+        return deliverDays;
+    }
+
+    public void setDeliverDays(int deliverDays) {
+        this.deliverDays = deliverDays;
+    }
+
+    public Date getDeliverDate() {
+        return deliverDate;
+    }
+
+    public void setDeliverDate(Date deliverDate) {
+        this.deliverDate = deliverDate;
+    }
+
+    public PaymentMethod getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(PaymentMethod paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+
+    public OrderStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(OrderStatus status) {
+        this.status = status;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
+    public Set<OrderDetail> getOrderDetails() {
+        return orderDetails;
+    }
+
+    public void setOrderDetails(Set<OrderDetail> orderDetails) {
+        this.orderDetails = orderDetails;
+    }
+
+    public void copyAddressFromCustomer() {
+        setFirstName(customer.getFirstName());
+        setLastName(customer.getLastName());
+        setPhoneNumber(customer.getPhoneNumber());
+        setAddressLine1(customer.getAddressLine1());
+        setAddressLine2(customer.getAddressLine2());
+        setCity(customer.getCity());
+        setCountry(customer.getCountry().getName());
+        setPostalCode(customer.getPostalCode());
+        setState(customer.getState());
+    }
+
+
+    @Override
+    public String toString() {
+        return "Order [id=" + id + ", subtotal=" + subtotal + ", paymentMethod=" + paymentMethod + ", status=" + status
+                + ", customer=" + customer.getFullName() + "]";
+    }
+
+
+    public void copyShippingAddress(Address address) {
+        setFirstName(address.getFirstName());
+        setLastName(address.getLastName());
+        setPhoneNumber(address.getPhoneNumber());
+        setAddressLine1(address.getAddressLine1());
+        setAddressLine2(address.getAddressLine2());
+        setCity(address.getCity());
+        setCountry(address.getCountry().getName());
+        setPostalCode(address.getPostalCode());
+        setState(address.getState());
+    }
+
+    public List<OrderTrack> getOrderTracks() {
+        return orderTracks;
+    }
+
+    @Transient
+    public String getShippingAddress() {
+        String address = firstName;
+
+        if (lastName != null && !lastName.isEmpty()) address += " " + lastName;
+
+        if (!addressLine1.isEmpty()) address += ", " + addressLine1;
+
+        if (addressLine2 != null && !addressLine2.isEmpty()) address += ", " + addressLine2;
+
+        if (!city.isEmpty()) address += ", " + city;
+
+        if (state != null && !state.isEmpty()) address += ", " + state;
+
+        address += ", " + country;
+
+        if (!postalCode.isEmpty()) address += ". Postal Code: " + postalCode;
+        if (!phoneNumber.isEmpty()) address += ". Phone Number: " + phoneNumber;
+
+        return address;
+    }
 }
