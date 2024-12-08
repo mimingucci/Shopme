@@ -309,4 +309,65 @@ public class Order {
 
         return address;
     }
+
+    @Transient
+    public boolean isProcessing() {
+        return hasStatus(OrderStatus.PROCESSING);
+    }
+
+    @Transient
+    public boolean isCOD() {
+        return paymentMethod.equals(PaymentMethod.COD);
+    }
+
+    @Transient
+    public boolean isPicked() {
+        return hasStatus(OrderStatus.PICKED);
+    }
+
+    @Transient
+    public boolean isShipping() {
+        return hasStatus(OrderStatus.SHIPPING);
+    }
+
+    @Transient
+    public String getProductNames() {
+        String productNames = "";
+
+        productNames = "<ul>";
+
+        for (OrderDetail detail : orderDetails) {
+            productNames += "<li>" + detail.getProduct().getShortName() + "</li>";
+        }
+
+        productNames += "</ul>";
+
+        return productNames;
+    }
+
+    @Transient
+    public boolean isDelivered() {
+        return hasStatus(OrderStatus.DELIVERED);
+    }
+
+    @Transient
+    public boolean isReturned() {
+        return hasStatus(OrderStatus.RETURNED);
+    }
+
+    @Transient
+    public boolean isReturnRequested() {
+        return hasStatus(OrderStatus.RETURN_REQUESTED);
+    }
+
+
+    public boolean hasStatus(OrderStatus status) {
+        for (OrderTrack aTrack : orderTracks) {
+            if (aTrack.getStatus().equals(status)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
