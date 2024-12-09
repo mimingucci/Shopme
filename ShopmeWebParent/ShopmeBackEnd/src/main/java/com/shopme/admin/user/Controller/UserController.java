@@ -34,7 +34,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @Controller
 public class UserController {
-	private String defaultRedirectURL = "redirect:/users/page/1?sortField=firstName&sortDir=asc";
+	private String defaultRedirectURL = "redirect:/users/page/1?sortField=firstName&sortDir=default";
 	@Autowired
 	private SettingRepository repo;
 	
@@ -87,12 +87,12 @@ public class UserController {
 	@GetMapping("/users/page/{pageNum}")
 	public String listByPage(@PathVariable("pageNum") int pageNum,
 			@RequestParam(value = "sortField", defaultValue = "") String sortField,
-			@RequestParam(value = "sortDir", defaultValue = "") String sortDir
+			@RequestParam(value = "sortDir", defaultValue = "default") String sortDir
 			, Model model) {
 		Sort sort=null;
 		Iterable<User> listByPage=null;
-		if(sortField.length()>0 && sortDir.length()>0) {
-			if(sortDir=="asc") {
+		if(!sortDir.equals("default")) {
+			if(sortDir.equals("asc")) {
 			    sort=Sort.by(sortField).ascending();
 			}else {
 				sort=Sort.by(sortField).descending();
@@ -109,15 +109,7 @@ public class UserController {
 		}
 		model.addAttribute("listUsers", listUsers);
 		model.addAttribute("currentPage", pageNum);
-		if(sortDir.length()==0) {
-			model.addAttribute("sortDir", "asc");
-		}else {
-			if(sortDir.equals("asc")) {
-				model.addAttribute("sortDir", "des");
-			}else {
-				model.addAttribute("sortDir", "");
-			}
-		}
+		model.addAttribute("sortDir", sortDir);
 		return "/user/users";
 	}
 	

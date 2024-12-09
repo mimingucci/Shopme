@@ -42,7 +42,9 @@ public class CustomerService {
 	}
 
 	public void listByPage(Integer pageNum, String sortField, String sortDir, String keyword, Model model) {
-		Sort sort=sortDir.equals("asc") ? Sort.by(sortField).ascending() : Sort.by(sortField).descending();
+		Sort sort=Sort.by(sortField);
+		if (!sortDir.equals("default"))
+			sort = sortDir.equals("asc") ? Sort.by(sortField).ascending() : Sort.by(sortField).descending();
 		Pageable pageable=PageRequest.of(pageNum-1, CUSTOMERS_PER_PAGE, sort);
 		Page<Customer> listCustomersByPage = null;
 		if(keyword.equals("") || keyword==null) {
@@ -58,11 +60,7 @@ public class CustomerService {
 		if (endCount > listCustomersByPage.getTotalElements()) {
 			endCount = listCustomersByPage.getTotalElements();
 		}
-		if(sortDir.equals("asc")) {
-			model.addAttribute("reverseSortDir}", "des");
-		}else {
-			model.addAttribute("reverseSortDir}", "asc");
-		}
+
 		model.addAttribute("sortDir", sortDir);
 		model.addAttribute("sortField", sortField);
 		model.addAttribute("listCustomers", listItems);

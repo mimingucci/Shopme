@@ -15,24 +15,24 @@
 		<table class="table table-bordered table-striped table-hover table-responsive-xl">
 			<thead class="thead-dark">
 				<tr>
-					<th th:replace="fragments :: column_link('id', 'ID', 'none', ${currentPage}, ${reverseDir}, ${moduleURL} )" />
-					<th th:replace="fragments :: column_link('firstName', 'First Name', 'none', ${currentPage}, ${reverseDir}, ${moduleURL})" />
-					<th th:replace="fragments :: column_link('lastName', 'Last Name', 'none', ${currentPage}, ${reverseDir}, ${moduleURL})" />
+					<th th:replace="fragments :: column_link('id', 'ID', 'none', ${currentPage}, ${sortDir}, ${moduleURL} )" />
+					<th th:replace="fragments :: column_link('firstName', 'First Name', 'none', ${currentPage}, ${sortDir}, ${moduleURL})" />
+					<th th:replace="fragments :: column_link('lastName', 'Last Name', 'none', ${currentPage}, ${sortDir}, ${moduleURL})" />
 					
 					<th class="hideable-column">
-					<th th:replace="fragments :: column_link('email', 'E-mail', 'tag', ${currentPage}, ${reverseDir}, ${moduleURL})" />
+					<th th:replace="fragments :: column_link('email', 'E-mail', 'tag', ${currentPage}, ${sortDir}, ${moduleURL})" />
 					</th>
 					
 					<th class="hideable-column">
-					<th th:replace="fragments :: column_link('city', 'City', 'tag', ${currentPage}, ${reverseDir}, ${moduleURL})" />
+					<th th:replace="fragments :: column_link('city', 'City', 'tag', ${currentPage}, ${sortDir}, ${moduleURL})" />
 					</th>
 					
 					<th class="hideable-column">
-					<th th:replace="fragments :: column_link('state', 'State', 'tag', ${currentPage}, ${reverseDir}, ${moduleURL})" />
+					<th th:replace="fragments :: column_link('state', 'State', 'tag', ${currentPage}, ${sortDir}, ${moduleURL})" />
 					</th>
 					
-					<th th:replace="fragments :: column_link('country', 'Country', 'none', ${currentPage}, ${reverseDir}, ${moduleURL})" />
-					<th th:replace="fragments :: column_link('enabled', 'Enabled', 'none', ${currentPage}, ${reverseDir}, ${moduleURL})" />
+					<th th:replace="fragments :: column_link('country', 'Country', 'none', ${currentPage}, ${sortDir}, ${moduleURL})" />
+					<th th:replace="fragments :: column_link('enabled', 'Enabled', 'none', ${currentPage}, ${sortDir}, ${moduleURL})" />
 					<th></th>
 				</tr>								
 			</thead>

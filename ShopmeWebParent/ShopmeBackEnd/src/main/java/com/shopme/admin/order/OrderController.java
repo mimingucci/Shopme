@@ -23,7 +23,7 @@ import com.shopme.common.entity.setting.Setting;
 @Controller
 public class OrderController {
 
-	public static final String defaultRedirectURL = "redirect:/orders/page/1?sortField=orderTime&sortDir=desc";
+	public static final String defaultRedirectURL = "redirect:/orders/page/1?sortField=orderTime&sortDir=default";
 	
 	@Autowired private OrderService orderService;
 	@Autowired private SettingService settingService;
@@ -36,7 +36,7 @@ public class OrderController {
 	@GetMapping("/orders/page/{pageNum}")
 	public String listByPage(
 			@RequestParam(name = "sortField", defaultValue = "orderTime", required = false) String sortField,
-			@RequestParam(name="sortDir", defaultValue = "asc", required = false) String sortDir,
+			@RequestParam(name="sortDir", defaultValue = "default", required = false) String sortDir,
 			@RequestParam(name="keyword", required = false) String keyword,
 			@PathVariable(name = "pageNum") int pageNum,
 			HttpServletRequest request,
@@ -50,6 +50,8 @@ public class OrderController {
 		if (!loggedUser.hasRole("Admin") && !loggedUser.hasRole("Salesperson") && loggedUser.hasRole("Shipper")) {
 			return "orders/orders_shipper";
 		}
+
+		model.addAttribute("sortDir", sortDir);
 		
 		return "orders/orders";
 	}

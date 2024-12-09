@@ -27,7 +27,6 @@ public class OrderService {
 	
 	public void listByPage(int pageNum, String sortField, String sortDir, String keyword, Model model) {
 		
-		
 		Sort sort = null;
 		
 		if ("destination".equals(sortField)) {
@@ -35,8 +34,9 @@ public class OrderService {
 		} else {
 			sort = Sort.by(sortField);
 		}
-		
-		sort = sortDir.equals("asc") ? sort.ascending() : sort.descending();
+
+		if (!sortDir.equals("default"))
+		    sort = sortDir.equals("asc") ? sort.ascending() : sort.descending();
 		Pageable pageable = PageRequest.of(pageNum - 1, ORDERS_PER_PAGE, sort);
 		
 		Page<Order> page = null;
@@ -60,6 +60,7 @@ public class OrderService {
 		model.addAttribute("startCount", startCount);
 		model.addAttribute("endCount", endCount);
 		model.addAttribute("totalItems", page.getTotalElements());
+		model.addAttribute("listItems", listItems);
 	}
 	
 	public Order get(Integer id) throws OrderNotFoundException {

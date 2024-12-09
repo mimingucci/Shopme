@@ -38,7 +38,7 @@ import com.shopme.common.entity.ProductImage;
 
 @Controller
 public class ProductController {
-	private String defaultRedirectURL = "redirect:/products/page/1?sortField=name&sortDir=asc&categoryId=0";
+	private String defaultRedirectURL = "redirect:/products/page/1?sortField=name&sortDir=default&categoryId=0";
 	@Autowired
 	private ProductService productService;
 	@Autowired
@@ -53,11 +53,10 @@ public class ProductController {
 
 	@GetMapping("/products/page/{pageNum}")
 	public String listByPage(@RequestParam(name = "sortField", defaultValue = "name") String sortField,
-			@RequestParam(name = "sortDir", defaultValue = "asc") String sortDir,
+			@RequestParam(name = "sortDir", defaultValue = "default") String sortDir,
 			@RequestParam(name = "categoryId", defaultValue = "0") String categoryId,
 			@RequestParam(name = "keyword", defaultValue = "") String keyword,
 			@PathVariable(name = "pageNum") Integer pageNum, Model model) {
-        
 		productService.listByPage( sortField, sortDir, keyword, pageNum ,Integer.valueOf(categoryId), model);
 
 		List<Category> listCategories = categoryService.listCategories();
@@ -65,11 +64,6 @@ public class ProductController {
 		if (categoryId != null)
 			model.addAttribute("categoryId", Integer.valueOf(categoryId));
 		model.addAttribute("listCategories", listCategories);
-		if (sortDir.equals("asc")) {
-			model.addAttribute("reverseDir", "dis");
-		} else {
-			model.addAttribute("reverseDir", "asc");
-		}
 		return "products/products";
 	}
 

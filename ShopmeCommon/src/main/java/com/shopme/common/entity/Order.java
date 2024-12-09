@@ -360,6 +360,14 @@ public class Order {
         return hasStatus(OrderStatus.RETURN_REQUESTED);
     }
 
+    @Transient
+    public String getDestination() {
+        String destination =  city + ", ";
+        if (state != null && !state.isEmpty()) destination += state + ", ";
+        destination += country;
+
+        return destination;
+    }
 
     public boolean hasStatus(OrderStatus status) {
         for (OrderTrack aTrack : orderTracks) {

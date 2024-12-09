@@ -15,7 +15,7 @@ import com.shopme.common.entity.Customer;
 
 @Controller
 public class CustomerController {
-	private String defaultRedirectURL = "redirect:/customers/page/1?sortField=firstName&sortDir=asc";
+	private String defaultRedirectURL = "redirect:/customers/page/1?sortField=firstName&sortDir=default";
 	@Autowired
 	private CustomerService customerService;
 	
@@ -27,13 +27,12 @@ public class CustomerController {
 	@GetMapping("/customers/page/{pageNum}")
 	public String listByPage(
 			@RequestParam(name = "sortField", defaultValue = "firstName") String sortField,
-			@RequestParam(name = "sortDir", defaultValue = "asc") String sortDir,
+			@RequestParam(name = "sortDir", defaultValue = "default", required = false) String sortDir,
 			@RequestParam(name="keyword", defaultValue = "") String keyword,
 			@PathVariable(name = "pageNum") int pageNum,
 			Model model
 			) {
 		if(sortField.equals("null") || sortField==null || sortField.equals(""))sortField="firstName";
-		if(sortDir.equals("null") || sortDir==null || sortDir.equals(""))sortDir="asc";
         customerService.listByPage(pageNum, sortField, sortDir, keyword, model);
 		
 		return "customers/customers";

@@ -40,8 +40,8 @@ public class CategoryService {
 	public List<Category> listCategoryByPage(int pageNum, String sortDir, String keyword){
 		Sort sort=null;
 		Pageable pageable=null;
-		if(sortDir!=null || !sortDir.isEmpty()) {
-			if(sortDir=="asc") {
+		if(!sortDir.equals("default")) {
+			if(sortDir.equals("asc")) {
 				sort=Sort.by(keyword).ascending();
 			}else {
 				sort=Sort.by(keyword).descending();

@@ -30,7 +30,7 @@ import com.shopme.common.entity.Category;
 @Controller
 public class BrandController {
 	private Integer BRANDS_PER_PAGE = 10;
-	private String defaultRedirectURL = "redirect:/brands/page/1?sortField=id&sortDir=asc";
+	private String defaultRedirectURL = "redirect:/brands/page/1?sortField=id&sortDir=default";
 	@Autowired
 	private BrandService service;
 
@@ -60,11 +60,10 @@ public class BrandController {
 	@GetMapping("/brands/page/{pageNum}")
 	public String listByPage(@PathVariable("pageNum") Integer pageNum, 
 			@PathParam("sortField") String sortField,
-			@PathParam("sortDir") String sortDir, 
+			@PathParam("sortDir") String sortDir,
 			@RequestParam(name = "keyword", defaultValue = "") String keyword,
 			@RequestParam(name = "previousPage", defaultValue = "1") Integer previousPage,
 			Model model) {
-		System.out.println("current page"+pageNum);
 		Pageable pageable = null;
 		Sort sort = null;
 		List<Brand> listBrands = null;
@@ -72,16 +71,17 @@ public class BrandController {
 		if (sortField == null || sortField.equals("null") || sortField.length() == 0) {
 			sortField = "id";
 		}
-		if (sortDir == null || sortDir.equals("null") || sortDir.length() == 0) {
-			sortDir = "asc";
-		}
 		if (pageNum == null || pageNum < 1) {
 			pageNum = 1;
 		}
-		if (sortDir == "asc") {
-			pageable = PageRequest.of(pageNum - 1, BRANDS_PER_PAGE, Sort.by(sortField).ascending());
+		if (!sortDir.equals("default")) {
+			if (sortDir.equals("asc")) {
+				pageable = PageRequest.of(pageNum - 1, BRANDS_PER_PAGE, Sort.by(sortField).ascending());
+			} else {
+				pageable = PageRequest.of(pageNum - 1, BRANDS_PER_PAGE, Sort.by(sortField).descending());
+			}
 		} else {
-			pageable = PageRequest.of(pageNum - 1, BRANDS_PER_PAGE, Sort.by(sortField).descending());
+			pageable = PageRequest.of(pageNum - 1, BRANDS_PER_PAGE);
 		}
 		Integer startCount = (pageNum - 1) * BRANDS_PER_PAGE + 1;
 		Integer endCount = startCount + BRANDS_PER_PAGE - 1;

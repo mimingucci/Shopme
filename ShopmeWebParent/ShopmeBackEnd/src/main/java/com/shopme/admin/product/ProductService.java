@@ -100,7 +100,8 @@ public class ProductService {
 	public void listByPage(String sortField, String sortDir, String keyword, Integer pageNum, Integer categoryId,
 			Model model) {
 		Sort sort = Sort.by(sortField);
-		sort = sortDir.equals("asc") ? sort.ascending() : sort.descending();
+		if (!sortDir.equals("default"))
+		    sort = sortDir.equals("asc") ? sort.ascending() : sort.descending();
 		Pageable pageable = PageRequest.of(pageNum - 1, PRODUCTS_PER_PAGE, sort);
 		Page<Product> page = null;
 
@@ -123,12 +124,10 @@ public class ProductService {
 
 			}
 		}
-		String reverseSortDir = sortDir.equals("asc") ? "des" : "asc";
 		PagingAndSortingHelper.updateModelAttributes(pageNum, page, "products", model);
 		model.addAttribute("listProducts", page.getContent());
 		model.addAttribute("sortField", sortField);
 		model.addAttribute("sortDir", sortDir);
-		model.addAttribute("reverseSortDir", reverseSortDir);
 		model.addAttribute("keyword", keyword);
 	}
 

@@ -19,7 +19,7 @@
 				<tr>
 					<th>ID</th>
 					<th>Category Image</th>
-					<th th:replace="fragments :: column_link('name', 'Category Name', 'none', 1, 'asc', '/categories')" />						
+					<th th:replace="fragments :: column_link('name', 'Category Name', 'none', 1, ${sortDir}, '/categories')" />
 					<th class="hideable-column">Alias</th>
 					<th>Enabled</th>
 					<th></th>
