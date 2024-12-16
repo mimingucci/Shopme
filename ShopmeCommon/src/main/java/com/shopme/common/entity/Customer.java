@@ -71,7 +71,7 @@ public class Customer {
 	@Column(name = "authentication_type", length = 10)
 	private AuthenticationType authenticationType;
 	
-	@Column(name = "reset_password_token", length = 30)
+	@Column(name = "reset_password_token", length = 255)
 	private String resetPasswordToken;
 	
 	@ManyToOne

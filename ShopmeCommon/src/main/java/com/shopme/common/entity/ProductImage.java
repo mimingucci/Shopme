@@ -66,7 +66,6 @@ public class ProductImage {
 
 	@Transient
 	public String getImagePath() {
-		return Constants.S3_BASE_URI+"/product-images/" + product.getId() + "/extras/" + this.name;
-		//Constants.S3_BASE_URI+
+		return "/product-images/" + product.getId() + "/extras/" + this.name;
 	}
 }

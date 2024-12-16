@@ -44,7 +44,7 @@
 					<td class="hideable-column">[[${customer.email}]]</td>
 					<td class="hideable-column">[[${customer.city}]]</td>
 					<td class="hideable-column">[[${customer.state}]]</td>
-					<td>[[${customer.country.name}]]</td>
+					<td>[[${customer?.country?.name}]]</td>
 					<td>
 						<div th:replace="fragments :: status(${customer.enabled}, 'customer', '/customers/' + ${customer.id})" />
 					</td>
@@ -70,7 +70,7 @@
 			</div>
 			<div class="col-8">
 				<div class="mb-1">
-					<span>[[${customer.country.name}]]</span>
+					<span>[[${customer?.country?.name}]]</span>
 				</div>
 				<div>
 					<div th:replace="fragments :: status(${customer.enabled}, 'customer', '/customers/' + ${customer.id})" />
@@ -104,6 +104,7 @@
 </div>
 <script th:src="@{/js/common_list.js}"></script>
 <script type="text/javascript">
+    moduleURL = "[[@{/customers}]]";
 	$(document).ready(function() {
 		$(".link-delete").on("click", function(e) {
 			e.preventDefault();

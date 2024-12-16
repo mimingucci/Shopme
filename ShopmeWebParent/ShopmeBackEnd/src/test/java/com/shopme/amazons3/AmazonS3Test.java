@@ -6,7 +6,6 @@ import java.io.InputStream;
 
 import org.junit.jupiter.api.Test;
 
-import com.shopme.admin.AmazonS3Util;
 
 public class AmazonS3Test {
 

@@ -28,7 +28,7 @@ function getCategoriesForNewForm() {
 
 function getCategories() {
 	var brandId = matches[0]; 
-	var url =  + "/brands/" + brandId + "/categories";
+	var url = "/brands/" + brandId + "/categories";
 	
 	$.get(url, function(responseJson) {
 		$.each(responseJson, function(index, category) {

@@ -45,11 +45,23 @@ public class UserService {
 		Pageable pageable=PageRequest.of(pageNum-1, pageSize);
 		return userRepo.findAll(pageable);
 	}
+
+	public Page<User> listByPageWithKeyword(int pageNum, String keyword){
+		int pageSize=5;
+		Pageable pageable=PageRequest.of(pageNum-1, pageSize);
+		return userRepo.findAll(keyword, pageable);
+	}
 	
 	public Page<User> listBySortedPage(int pageNum, Sort sort){
 		int pageSize=5;
 		Pageable pageable=PageRequest.of(pageNum-1, pageSize, sort);
 		return userRepo.findAll(pageable);
+	}
+
+	public Page<User> listBySortedPageWithKeyword(int pageNum, Sort sort, String keyword){
+		int pageSize=5;
+		Pageable pageable=PageRequest.of(pageNum-1, pageSize, sort);
+		return userRepo.findAll(keyword, pageable);
 	}
 	
 	public List<Role> listRoles() {

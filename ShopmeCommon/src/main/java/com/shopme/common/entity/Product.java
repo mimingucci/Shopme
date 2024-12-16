@@ -313,7 +313,7 @@ public class Product {
 		if (id == null || mainImage == null)
 			return "/images/image-thumbnail.png";
 
-		return Constants.S3_BASE_URI+"/product-images/" + this.id + "/" + this.mainImage;
+		return "/product-images/" + this.id + "/" + this.mainImage;
 	}
 
 	public boolean containsImageName(String imageName) {
@@ -350,7 +350,7 @@ public class Product {
 		if (id == null || mainImage == null)
 			return "/images/image-thumbnail.png";
 
-		return Constants.S3_BASE_URI+"/product-images/" + this.id + "/" + this.mainImage;
+		return "/product-images/" + this.id + "/" + this.mainImage;
 	}
 
 	@Transient

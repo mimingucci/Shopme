@@ -32,6 +32,10 @@ public class CategoryService {
 	public List<Category> listCategories() {
 		return categoryRepo.findAll();
 	}
+
+	public List<Category> listCategoriesWithKeyword(String keyword) {
+		return categoryRepo.totalElements(keyword);
+	}
 	
 	public void updateCategoryEnabledStatus(Integer id, boolean enabled) {
 		categoryRepo.updateEnabledStatus(id, enabled);
@@ -51,6 +55,24 @@ public class CategoryService {
 			pageable=(Pageable) PageRequest.of(pageNum-1, 5);
 		}
 		Page<Category> listCategoriesPage=categoryRepo.findSortedAndPagingCategories(pageable);
+		List<Category> listCategoriesAfterSortedAndPaging=listCategoriesPage.getContent();
+		return listCategoriesAfterSortedAndPaging;
+	}
+
+	public List<Category> listCategoryByPageWithKeyword(int pageNum, String sortDir, String sortField, String keyword){
+		Sort sort=null;
+		Pageable pageable=null;
+		if(!sortDir.equals("default")) {
+			if(sortDir.equals("asc")) {
+				sort=Sort.by(sortField).ascending();
+			}else {
+				sort=Sort.by(sortField).descending();
+			}
+			pageable=(Pageable) PageRequest.of(pageNum-1, 5, sort);
+		}else {
+			pageable=(Pageable) PageRequest.of(pageNum-1, 5);
+		}
+		Page<Category> listCategoriesPage=categoryRepo.search(keyword, pageable);
 		List<Category> listCategoriesAfterSortedAndPaging=listCategoriesPage.getContent();
 		return listCategoriesAfterSortedAndPaging;
 	}

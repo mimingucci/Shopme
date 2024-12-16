@@ -10,7 +10,7 @@
 		<a th:href="@{/brands/new}" class="fas fa-folder-plus fa-2x icon-dark mr-2"></a>
 	</div>
 		
-	<div th:replace="fragments :: search_form_and_message('/brands')" />
+	<div th:replace="fragments :: search_form_and_message(${moduleURL})" />
 	
 	<div class="full-details">
 		<table class="table table-bordered table-striped table-hover table-responsive-xl">
@@ -71,7 +71,7 @@
 	
 </div>
 <script type="text/javascript">
-	moduleURL = "/ShopmeAdmin/brands";
+	moduleURL = "[[@{/brands}]]";
 	$(document).ready(function() {
 		$(".link-delete").on("click", function(e) {
 			e.preventDefault();

@@ -55,6 +55,31 @@ public class OrderController {
 		
 		return "orders/orders";
 	}
+
+	@GetMapping("/orders/detail/{id}")
+	public String viewOrderDetails(@PathVariable("id") Integer id, Model model,
+								   RedirectAttributes ra, HttpServletRequest request,
+								   @AuthenticationPrincipal ShopmeUserDetails loggedUser) {
+		try {
+			Order order = orderService.get(id);
+			loadCurrencySetting(request);
+
+			boolean isVisibleForAdminOrSalesperson = false;
+
+			if (loggedUser.hasRole("Admin") || loggedUser.hasRole("Salesperson")) {
+				isVisibleForAdminOrSalesperson = true;
+			}
+
+			model.addAttribute("isVisibleForAdminOrSalesperson", isVisibleForAdminOrSalesperson);
+			model.addAttribute("order", order);
+
+			return "orders/order_details_modal";
+		} catch (OrderNotFoundException ex) {
+			ra.addFlashAttribute("message", ex.getMessage());
+			return defaultRedirectURL;
+		}
+
+	}
 	
 	private void loadCurrencySetting(HttpServletRequest request) {
 		List<Setting> currencySettings = settingService.getCurrencySettings();

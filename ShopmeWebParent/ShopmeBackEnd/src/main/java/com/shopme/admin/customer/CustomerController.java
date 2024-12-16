@@ -34,7 +34,8 @@ public class CustomerController {
 			) {
 		if(sortField.equals("null") || sortField==null || sortField.equals(""))sortField="firstName";
         customerService.listByPage(pageNum, sortField, sortDir, keyword, model);
-		
+		model.addAttribute("moduleURL", "/customers");
+
 		return "customers/customers";
 	}
 	

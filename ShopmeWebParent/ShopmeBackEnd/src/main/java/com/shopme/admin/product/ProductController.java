@@ -26,7 +26,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fasterxml.jackson.core.sym.Name;
-import com.shopme.admin.AmazonS3Util;
 import com.shopme.admin.FileUploadUtil;
 import com.shopme.admin.brand.BrandService;
 import com.shopme.admin.security.ShopmeUserDetails;
@@ -101,37 +100,17 @@ public class ProductController {
 				return defaultRedirectURL;
 			}
 		}
-		
-		setMainImage(mainImageMultipart, product);
-		setExistingExtraImageNames(imageIDs, imageNames, product);
-		setNewExtraImageNames(extraImageMultiparts, product);
-		setProductDetails(detailIDs, detailNames, detailValues, product);
 
-		
+		ProductSaveHelper.setMainImageName(mainImageMultipart, product);
+		ProductSaveHelper.setExistingExtraImageNames(imageIDs, imageNames, product);
+		ProductSaveHelper.setNewExtraImageNames(extraImageMultiparts, product);
+		ProductSaveHelper.setProductDetails(detailIDs, detailNames, detailValues, product);
 
 		Product savedProduct = productService.save(product);
-        deleteMainImageIfMainImageWereUploaded(savedProduct);
+
 		ProductSaveHelper.saveUploadedImages(mainImageMultipart, extraImageMultiparts, savedProduct);
-		if (!mainImageMultipart.isEmpty()) {
-			String fileName = StringUtils.cleanPath(mainImageMultipart.getOriginalFilename());
-			String uploadDir = "product-images/" + savedProduct.getId();
-//			FileUploadUtil.saveFile(uploadDir, fileName, mainImageMultipart);	
-			AmazonS3Util.uploadFile(uploadDir, fileName, mainImageMultipart.getInputStream());
-		}
-		
-		if (extraImageMultiparts.length > 0) {
-			String uploadDir = "product-images/" + savedProduct.getId() + "/extras";
-			
-			for (MultipartFile multipartFile : extraImageMultiparts) {
-				if (multipartFile.isEmpty()) continue;
-				
-				String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
-//				FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);	
-				AmazonS3Util.uploadFile(uploadDir, fileName, multipartFile.getInputStream());
-			}
-		}
-		deleteExtrasImagesWereDeletedInForm(product);
-		
+
+		ProductSaveHelper.deleteExtraImagesWeredRemovedOnForm(product);
 
 		ra.addFlashAttribute("message", "The product has been saved successfully.");
 
@@ -152,12 +131,11 @@ public class ProductController {
 		   Files.list(Paths.get(dir)).forEach(file->{
 			   String fileName=file.toFile().getName();
 			   if(newMainImageName.equals(fileName)) {
-//				  try {
-//					Files.delete(file);
-					AmazonS3Util.deleteFile(fileName);
-//				} catch (IOException e) {
-//					e.printStackTrace();
-//				}
+				  try {
+					Files.delete(file);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			   }
 		   });
 	}
@@ -171,13 +149,12 @@ public class ProductController {
 			Files.list(dirPath).forEach(file ->{
 				String fileName=file.toFile().getName();
 				if(!product.containsImageName(fileName)) {
-//					try {
-//						Files.delete(file);
-						AmazonS3Util.deleteFile(fileName);
-//					} catch (IOException e) {
-						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
+					try {
+						Files.delete(file);
+					} catch (IOException e) {
+//						 TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			});
 			
@@ -302,10 +279,8 @@ public class ProductController {
 			String productExtraImagesDir = "product-images/" + id + "/extras";
 			String productImagesDir = "product-images/" + id;
 			
-//			FileUploadUtil.removeDir(productExtraImagesDir);
-//			FileUploadUtil.removeDir(productImagesDir);
-			AmazonS3Util.removeFolder(productExtraImagesDir);
-			AmazonS3Util.removeFolder(productImagesDir);
+			FileUploadUtil.removeDir(productExtraImagesDir);
+			FileUploadUtil.removeDir(productImagesDir);
 			redirectAttributes.addFlashAttribute("message", 
 					"The product ID " + id + " has been deleted successfully");
 		} catch (Exception ex) {

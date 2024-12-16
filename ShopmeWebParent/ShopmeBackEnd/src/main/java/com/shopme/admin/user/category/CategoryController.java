@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.shopme.admin.AmazonS3Util;
 import com.shopme.admin.FileUploadUtil;
 import com.shopme.common.entity.Category;
 import com.shopme.common.exception.CategoryNotFoundException;
@@ -30,6 +29,7 @@ public class CategoryController {
         List<Category> categories = service.listCategories();
 
         model.addAttribute("listCategories", categories);
+        model.addAttribute("moduleURL", "/categories");
         return "categories/categories";
     }
 
@@ -49,9 +49,10 @@ public class CategoryController {
             @PathVariable("pageNum") int pageNum,
             @RequestParam(name = "sortField", defaultValue = "name") String sortField,
             @RequestParam(name = "sortDir", defaultValue = "default") String sortDir,
+            @RequestParam(value = "keyword", defaultValue = "") String keyword,
             Model model) {
-        List<Category> listCategories = service.listCategoryByPage(pageNum, sortDir, sortField);
-        List<Category> categories = service.listCategories();
+        List<Category> listCategories = (keyword==null || keyword.isEmpty()) ? service.listCategoryByPage(pageNum, sortDir, sortField) : service.listCategoryByPageWithKeyword(pageNum, sortDir, sortField, keyword);
+        List<Category> categories = (keyword==null || keyword.isEmpty()) ? service.listCategories() : service.listCategoriesWithKeyword(keyword);
         int totalPages;
         if (categories.size() % 5 != 0) {
             totalPages = categories.size() / 5 + 1;
@@ -63,6 +64,7 @@ public class CategoryController {
         model.addAttribute("currentPage", pageNum);
         model.addAttribute("sortField", "name");
         model.addAttribute("sortDir", sortDir);
+        model.addAttribute("moduleURL", "/categories");
         model.addAttribute("listCategories", listCategories);
         return "categories/categories";
     }
@@ -89,10 +91,8 @@ public class CategoryController {
             Category savedCategory = service.save(category);
             String uploadDir = "category-images/" + savedCategory.getId();
 
-//		    FileUploadUtil.removeDir(uploadDir);
-//			FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
-            AmazonS3Util.removeFolder(uploadDir);
-            AmazonS3Util.uploadFile(uploadDir, fileName, multipartFile.getInputStream());
+		    FileUploadUtil.removeDir(uploadDir);
+			FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
         } else {
             service.save(category);
         }
@@ -126,8 +126,7 @@ public class CategoryController {
         try {
             service.delete(id);
             String categoryDir = "category-images/" + id;
-            AmazonS3Util.removeFolder(categoryDir);
-
+            FileUploadUtil.removeDir(categoryDir);
             redirectAttributes.addFlashAttribute("message",
                     "The category ID " + id + " has been deleted successfully");
         } catch (CategoryNotFoundException ex) {
